@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اختبار الحوسبة السحابية — عمل الطالب محمد باخشوين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#081522;
+  --navy-900:#0b2035;
+  --navy-800:#0f2c47;
+  --navy-700:#15395c;
+  --navy-600:#1c4a75;
+  --amber-500:#e08e0b;
+  --amber-400:#f2a92f;
+  --teal-400:#2fb8a6;
+  --red-500:#e2554a;
+  --paper:#eef3f8;
+  --ink:#0b2035;
+  --muted:#5b7288;
+  font-size: 16px;
+}
+:root:not([data-theme="light"]){
+  --bg: var(--navy-950);
+  --panel: #0e2338;
+  --panel-2: #102942;
+  --border: rgba(255,255,255,0.09);
+  --text: #eaf1f8;
+  --text-dim: #93a8bc;
+}
+:root[data-theme="light"]{
+  --bg: var(--paper);
+  --panel: #ffffff;
+  --panel-2: #f4f8fb;
+  --border: rgba(11,32,53,0.1);
+  --text: var(--ink);
+  --text-dim: var(--muted);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: var(--paper);
+    --panel: #ffffff;
+    --panel-2: #f4f8fb;
+    --border: rgba(11,32,53,0.1);
+    --text: var(--ink);
+    --text-dim: var(--muted);
+  }
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background: radial-gradient(1200px 700px at 15% -10%, rgba(224,142,11,0.12), transparent 60%),
+              radial-gradient(1000px 600px at 110% 10%, rgba(47,184,166,0.10), transparent 55%),
+              var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif;
+  direction: rtl;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap{
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 22px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand .mark{
+  width:38px;height:38px;border-radius:10px;
+  background: linear-gradient(145deg, var(--amber-500), var(--amber-400));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;color:#241300;
+  font-size:15px;
+  flex-shrink:0;
+}
+.brand-text .t1{font-size:13px;color:var(--text-dim);line-height:1.2;}
+.brand-text .t2{font-size:16px;font-weight:700;line-height:1.3;}
+.theme-toggle{
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:7px 10px;
+  color:var(--text);
+  cursor:pointer;
+  font-size:14px;
+}
+
+/* ---- cards / panels ---- */
+.card{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+.hero{
+  text-align:center;
+  padding: 34px 22px 30px;
+}
+.hero h1{
+  font-size: 25px;
+  margin: 0 0 8px;
+  line-height:1.4;
+}
+.hero p{
+  color:var(--text-dim);
+  font-size:14.5px;
+  margin: 0 auto 20px;
+  max-width: 480px;
+  line-height:1.7;
+}
+.stats-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin: 18px 0 6px;
+  flex-wrap:wrap;
+}
+.stat-pill{
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:6px 14px;
+  font-size:12.5px;
+  color:var(--text-dim);
+  font-family:'IBM Plex Mono',monospace;
+}
+.stat-pill b{ color:var(--amber-400); font-weight:600; }
+
+/* category picker */
+.cat-title{
+  font-size:13px;
+  color:var(--text-dim);
+  margin: 26px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.cat-title button{
+  background:none;border:none;color:var(--teal-400);
+  font-size:12.5px; cursor:pointer; font-family:inherit;
+}
+.cat-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.cat-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:12px 13px;
+  cursor:pointer;
+  user-select:none;
+  transition: border-color .15s, background .15s;
+}
+.cat-chip.on{
+  border-color: var(--amber-500);
+  background: rgba(224,142,11,0.10);
+}
+.cat-chip .box{
+  width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--text-dim);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+  color:transparent;
+}
+.cat-chip.on .box{
+  background:var(--amber-500);
+  border-color:var(--amber-500);
+  color:#241300;
+}
+.cat-chip .label{font-size:14.5px; font-weight:600; line-height:1.35;}
+.cat-chip .sub{font-size:12.5px; color:var(--text-dim); margin-top:3px; line-height:1.5;}
+.cat-chip .count{font-size:11px;color:var(--text-dim); font-family:'IBM Plex Mono',monospace; margin-top:5px;}
+
+.mode-row{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.mode-btn{
+  flex:1;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  font-size:13px;
+  color:var(--text-dim);
+}
+.mode-btn.on{ border-color: var(--teal-400); color:var(--text); background: rgba(47,184,166,0.10);}
+
+.start-btn{
+  width:100%;
+  margin-top:22px;
+  background: linear-gradient(145deg, var(--amber-500), #c97806);
+  color:#241300;
+  border:none;
+  border-radius:13px;
+  padding:15px;
+  font-size:16px;
+  font-weight:700;
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow: 0 8px 22px rgba(224,142,11,0.25);
+}
+.start-btn:disabled{ opacity:.45; box-shadow:none; cursor:not-allowed; }
+.start-btn:active{ transform: translateY(1px); }
+
+.best-score{
+  text-align:center;
+  margin-top:14px;
+  font-size:12.5px;
+  color: var(--text-dim);
+}
+.best-score b{ color: var(--teal-400); }
+
+/* ---- quiz screen ---- */
+.progress-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+.progress-bar{
+  flex:1;
+  height:8px;
+  background:var(--panel-2);
+  border-radius:6px;
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.progress-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--amber-500), var(--teal-400));
+  border-radius:6px;
+  transition: width .35s ease;
+}
+.progress-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--text-dim);
+  white-space:nowrap;
+}
+.score-chip{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:4px 9px;
+  color: var(--teal-400);
+  white-space:nowrap;
+}
+
+.q-cat{
+  display:inline-block;
+  font-size:11.5px;
+  color:var(--amber-400);
+  background: rgba(224,142,11,0.12);
+  border-radius:20px;
+  padding:4px 11px;
+  margin-bottom:14px;
+}
+.q-type{
+  display:inline-block;
+  font-size:11px;
+  color:var(--text-dim);
+  margin-inline-start:6px;
+}
+.q-text{
+  font-size:18px;
+  line-height:1.65;
+  font-weight:600;
+  margin: 0 0 20px;
+}
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  cursor:pointer;
+  font-size:14.5px;
+  line-height:1.5;
+  text-align:right;
+  transition: border-color .12s, background .12s, transform .08s;
+}
+.opt:active{ transform: scale(0.99); }
+.opt .letter{
+  width:26px;height:26px;border-radius:8px;
+  background: var(--bg);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  flex-shrink:0;
+  color:var(--text-dim);
+}
+.opt.correct{
+  border-color: var(--teal-400);
+  background: rgba(47,184,166,0.14);
+}
+.opt.correct .letter{ background:var(--teal-400); color:#04231d; border-color:var(--teal-400); }
+.opt.wrong{
+  border-color: var(--red-500);
+  background: rgba(226,85,74,0.13);
+}
+.opt.wrong .letter{ background:var(--red-500); color:#2a0805; border-color:var(--red-500); }
+.opt.disabled{ cursor:default; }
+.opt.dim{ opacity:.55; }
+
+.explain{
+  margin-top:16px;
+  padding:14px 15px;
+  border-radius:12px;
+  font-size:13.5px;
+  line-height:1.75;
+  display:none;
+}
+.explain.show{ display:block; animation: fadeIn .25s ease; }
+.explain.ok{ background: rgba(47,184,166,0.10); border:1px solid rgba(47,184,166,0.35); }
+.explain.bad{ background: rgba(226,85,74,0.10); border:1px solid rgba(226,85,74,0.35); }
+.explain .tag{ font-weight:700; display:block; margin-bottom:5px; }
+.explain.ok .tag{ color:var(--teal-400); }
+.explain.bad .tag{ color:var(--red-500); }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+
+.next-btn{
+  width:100%;
+  margin-top:18px;
+  background: var(--panel-2);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  border-radius:12px;
+  padding:13px;
+  font-size:14.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+  display:none;
+}
+.next-btn.show{ display:block; }
+.next-btn:active{ transform: translateY(1px); }
+
+.quiz-foot{
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+}
+.quit-link{
+  color:var(--text-dim);
+  font-size:12.5px;
+  background:none;border:none;cursor:pointer;font-family:inherit;
+  text-decoration:underline;
+}
+
+/* ---- results ---- */
+.result-ring-wrap{
+  display:flex;
+  justify-content:center;
+  margin: 6px 0 18px;
+}
+.result-ring{
+  position:relative;
+  width:160px;height:160px;
+}
+.result-ring svg{ transform: rotate(-90deg); }
+.result-ring .pct{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.result-ring .pct .num{ font-size:32px; font-weight:700; font-family:'IBM Plex Mono',monospace; }
+.result-ring .pct .lbl{ font-size:11.5px; color:var(--text-dim); margin-top:2px; }
+.result-msg{ text-align:center; font-size:15px; margin-bottom: 22px; color:var(--text-dim); }
+.result-msg b{ color:var(--text); }
+
+.cat-breakdown{ margin-top:6px; }
+.cb-row{
+  display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px;
+}
+.cb-row .name{ width:130px; flex-shrink:0; color:var(--text-dim); }
+.cb-track{ flex:1; height:8px; border-radius:5px; background:var(--panel-2); overflow:hidden; border:1px solid var(--border);}
+.cb-fill{ height:100%; border-radius:5px; background: linear-gradient(90deg, var(--teal-400), var(--amber-400)); }
+.cb-frac{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-dim); width:42px; text-align:left; flex-shrink:0;}
+
+.review-item{
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  border-radius:12px;
+  padding:14px 15px;
+  margin-top:12px;
+}
+.review-item .rq{ font-size:14px; font-weight:600; margin-bottom:8px; line-height:1.6; }
+.review-item .ra{ font-size:12.5px; line-height:1.6; }
+.review-item .ra .wrong-ans{ color:var(--red-500); }
+.review-item .ra .right-ans{ color:var(--teal-400); }
+.review-item .rex{ font-size:12.5px; color:var(--text-dim); margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); line-height:1.7;}
+
+.result-actions{ display:flex; gap:10px; margin-top:24px; }
+.result-actions .start-btn{ margin-top:0; }
+.secondary-btn{
+  flex:1;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  border-radius:13px;
+  padding:15px;
+  font-size:14.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+.screen{ display:none; }
+.screen.active{ display:block; }
+
+::selection{ background: rgba(224,142,11,0.3); }
+
+footer.note{
+  text-align:center;
+  font-size:11.5px;
+  color:var(--text-dim);
+  margin-top:22px;
+  line-height:1.8;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">CC</div>
+      <div class="brand-text">
+        <div class="t1">مذاكرة الاختبار النهائي · عمل الطالب: محمد باخشوين</div>
+        <div class="t2">الحوسبة السحابية — Cloud Computing</div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">◐</button>
+  </div>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <div class="screen active" id="screen-home">
+    <div class="card hero">
+      <h1>جاهز تختبر نفسك؟ 🧠</h1>
+      <p>بنك أسئلة شامل مقسّم حسب محاضراتك السبع بالضبط — اختر محاضرة أو أكثر، أو خض التحدي الكامل. وإذا أخطأت يظهر لك الجواب الصحيح مع السبب.</p>
+      <div class="stats-row">
+        <div class="stat-pill">إجمالي الأسئلة: <b id="totalQCount">0</b></div>
+        <div class="stat-pill">تصحيح فوري مع الشرح</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="cat-title">
+        <span>اختر الملزمة</span>
+        <button id="selectAllBtn">تحديد الكل</button>
+      </div>
+      <div class="cat-grid" id="catGrid" style="grid-template-columns:1fr;"></div>
+
+      <div class="cat-title" style="margin-top:22px;">عدد الأسئلة</div>
+      <div class="mode-row" id="lengthRow">
+        <div class="mode-btn" data-len="15">تحدي سريع (15)</div>
+        <div class="mode-btn on" data-len="30">متوسط (30)</div>
+        <div class="mode-btn" data-len="60">كبير (60)</div>
+        <div class="mode-btn" data-len="100">كبير جداً (100)</div>
+        <div class="mode-btn" data-len="all">شامل (الكل)</div>
+      </div>
+
+      <button class="start-btn" id="startBtn">ابدأ الاختبار</button>
+      <div class="best-score" id="bestScoreLine"></div>
+    </div>
+
+    <footer class="note">مبني على محاضراتك (مقدمة السحابة · Azure · التخزين السحابي · Azure Storage · الاستضافة · Git · GitHub) — ذاكروا سوا وبالتوفيق ✨<br><b style="color:var(--amber-400)">عمل الطالب: محمد باخشوين</b></footer>
+  </div>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-label" id="progressLabel">1 / 30</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="score-chip" id="scoreChip">0 ✓</div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="q-cat" id="qCat">—</span>
+        <span class="q-type" id="qType"></span>
+      </div>
+      <div class="q-text" id="qText">...</div>
+      <div class="options" id="qOptions"></div>
+      <div class="explain" id="qExplain">
+        <span class="tag" id="qExplainTag"></span>
+        <span id="qExplainText"></span>
+      </div>
+      <button class="next-btn" id="nextBtn">السؤال التالي ←</button>
+    </div>
+
+    <div class="quiz-foot">
+      <button class="quit-link" id="quitBtn">إنهاء والخروج للنتيجة</button>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <div class="screen" id="screen-results">
+    <div class="card">
+      <div class="result-ring-wrap">
+        <div class="result-ring">
+          <svg width="160" height="160">
+            <circle cx="80" cy="80" r="70" stroke="var(--panel-2)" stroke-width="14" fill="none"/>
+            <circle cx="80" cy="80" r="70" stroke="url(#grad)" stroke-width="14" fill="none"
+                    stroke-linecap="round" id="ringProgress" stroke-dasharray="440" stroke-dashoffset="440"/>
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#e08e0b"/>
+                <stop offset="100%" stop-color="#2fb8a6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="pct"><div class="num" id="pctNum">0%</div><div class="lbl">النتيجة</div></div>
+        </div>
+      </div>
+      <div class="result-msg" id="resultMsg"></div>
+
+      <div class="cat-title">الأداء حسب القسم</div>
+      <div class="cat-breakdown" id="catBreakdown"></div>
+    </div>
+
+    <div id="reviewSection" style="margin-top:14px;"></div>
+
+    <div class="result-actions">
+      <button class="secondary-btn" id="homeBtn">الرئيسية</button>
+      <button class="start-btn" id="retryBtn">إعادة المحاولة</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* BANK */
+const CATEGORIES=[{"id": "c1", "label": "المحاضرة 1"}, {"id": "c2", "label": "المحاضرة 4"}, {"id": "c3", "label": "المحاضرة 5"}, {"id": "c4", "label": "المحاضرة 6"}, {"id": "c5", "label": "المحاضرة 8"}, {"id": "c6", "label": "المحاضرة 10"}, {"id": "c7", "label": "المحاضرة 11"}];
+const MEMOS=[{"id": "m1", "label": "المحاضرة 1", "sub": "مقدمة الحوسبة السحابية: التاريخ، المكونات، الخصائص، العيوب، التطبيقات", "cats": ["c1"]}, {"id": "m2", "label": "المحاضرة 4", "sub": "Microsoft Azure: الخدمات، الإيجابيات والسلبيات، إنشاء الجهاز الافتراضي", "cats": ["c2"]}, {"id": "m3", "label": "المحاضرة 5", "sub": "التخزين السحابي: الفوائد والعيوب، النسخ الاحتياطي، Dropbox وDrive وOneDrive وAzure Files", "cats": ["c3"]}, {"id": "m4", "label": "المحاضرة 6", "sub": "Azure Storage: Blob وQueue وTable وإنشاء الأقراص", "cats": ["c4"]}, {"id": "m5", "label": "المحاضرة 8", "sub": "الاستضافة: المشتركة وVPS والمخصصة والسحابية، الدومين وDNS وSEO", "cats": ["c5"]}, {"id": "m6", "label": "المحاضرة 10", "sub": "Git: العناصر، الأوامر، push وpull", "cats": ["c6"]}, {"id": "m7", "label": "المحاضرة 11", "sub": "GitHub: الفرق عن Git، المميزات والعيوب، الأوامر", "cats": ["c7"]}];
+const CAT_TO_MEMO={};
+MEMOS.forEach(m=>m.cats.forEach(c=>CAT_TO_MEMO[c]=m.id));
+function memoOf(catId){return CAT_TO_MEMO[catId];}
+function memoLabel(id){const m=MEMOS.find(x=>x.id===id);return m?m.label:id;}
+const Q=[{"c": "c1", "type": "mcq", "q": "من عبّر عن فكرة الحوسبة كخدمة عامة في الستينات؟", "opts": ["جون مكارثي", "بيل غيتس", "ستيف جوبز", "لاري بيج"], "a": 0, "ex": "عبّر جون مكارثي عن الفكرة في الستينات."}, {"c": "c1", "type": "mcq", "q": "ظهرت الحوسبة السحابية فعلياً عام 2000 عندما وسّعت استخدام البرمجيات عبر الويب شركة:", "opts": ["مايكروسوفت", "جوجل", "أمازون", "آي بي إم"], "a": 0, "ex": "المحاضرة تنسب ذلك لمايكروسوفت، وجوجل لعبت دوراً مهماً لاحقاً."}, {"c": "c1", "type": "mcq", "q": "في 2009 أطلقت جوجل:", "opts": ["نظام تشغيل متكامل بمفهوم السحابة", "خدمة سكاي درايف", "متصفح ويب جديد", "خدمة دروب بوكس"], "a": 0, "ex": "أطلقت جوجل نظام تشغيل متكاملاً يعمل بمفهوم السحابة."}, {"c": "c1", "type": "mcq", "q": "ما الذي يميز السحابة عن خدمة مركز البيانات؟", "opts": ["الدفع حسب الاستخدام الفعلي", "الدفع على الموارد المحجوزة", "شراء الأجهزة مقدماً", "عقد ثابت طويل الأمد"], "a": 0, "ex": "في مركز البيانات تدفع مقابل الموارد المحجوزة سواء استخدمتها أم لا."}, {"c": "c1", "type": "mcq", "q": "أي مما يلي ليس من المكونات الأساسية للحوسبة السحابية؟", "opts": ["طابعة ليزر", "متصفح إنترنت", "موفر اتصال بالإنترنت", "مزود الخدمة السحابية"], "a": 0, "ex": "المكونات: جهاز حاسوب، نظام تشغيل، متصفح، موفر اتصال، مزود خدمة."}, {"c": "c1", "type": "mcq", "q": "الجهاز المطلوب من المستخدم في الحوسبة السحابية:", "opts": ["إمكانيات متوسطة تكفي للاتصال بالإنترنت", "معالج بمواصفات خادم", "ذاكرة عشوائية ضخمة جداً", "بطاقة رسوميات قوية"], "a": 0, "ex": "المعالجة تتم على الخوادم، فيكفي جهاز متوسط متصل بالإنترنت."}, {"c": "c1", "type": "mcq", "q": "\"مركزية المستخدم\" تعني:", "opts": ["المستخدم بعد الاتصال يملك ما يخزنه ويشاركه", "التركيز على التطبيقات نفسها", "التحرر من أعباء البنية التحتية", "ربط آلاف الأجهزة معاً"], "a": 0, "ex": "هذا تعريف مركزية المستخدم في المحاضرة."}, {"c": "c1", "type": "mcq", "q": "\"طاقة الحوسبة\" في السحابة تنتج من:", "opts": ["ارتباط آلاف الأجهزة والمزودات ببعضها", "جهاز واحد عالي الأداء", "زيادة سرعة المتصفح", "حجم شاشة المستخدم"], "a": 0, "ex": "القوة تأتي من تجميع آلاف الأجهزة والمزودات."}, {"c": "c1", "type": "mcq", "q": "أي مما يلي من عيوب الحوسبة السحابية؟", "opts": ["التبعية وفقدان السيطرة", "الدفع حسب الاستخدام", "التحديث التلقائي", "سعة تخزين مرنة"], "a": 0, "ex": "السحابة بيئة مغلقة برمجياً فيعتمد العميل على المزود."}, {"c": "c1", "type": "mcq", "q": "موقع أمازون وإي باي مثال على تطبيقات:", "opts": ["التجارة الإلكترونية", "برامج مكافحة الفيروسات", "مؤتمرات الفيديو", "تحليل البيانات الضخمة"], "a": 0, "ex": "ذكرتهما المحاضرة مثالاً على التجارة الإلكترونية."}, {"c": "c1", "type": "mcq", "q": "برنامج Zoom مثال على تطبيقات:", "opts": ["التواصل ومؤتمرات الإنترنت", "التجارة الإلكترونية", "النسخ الاحتياطي", "مكافحة الفيروسات"], "a": 0, "ex": "Zoom من برامج عقد المؤتمرات عبر الإنترنت."}, {"c": "c1", "type": "mcq", "q": "منصتا Apache وHana تُستخدمان في:", "opts": ["تحليل البيانات الضخمة", "التعليم الإلكتروني", "التجارة الإلكترونية", "استضافة المواقع"], "a": 0, "ex": "هما من أبرز منصات تحليل البيانات الضخمة."}, {"c": "c2", "type": "mcq", "q": "الفكرة الأساسية لـ Microsoft Cloud:", "opts": ["توفير الموارد والتخزين عبر الإنترنت بدل المحلية", "بيع الأجهزة الحاسوبية", "تصنيع أنظمة التشغيل فقط", "إنتاج الألعاب الإلكترونية"], "a": 0, "ex": "تقدم الموارد الحاسوبية والتخزين عبر الإنترنت بدلاً من الموارد المحلية."}, {"c": "c2", "type": "mcq", "q": "Dynamics 365 يوفر نظامي:", "opts": ["CRM وERP", "Blob وQueue", "VPS وDNS", "Git وGitHub"], "a": 0, "ex": "يوفر إدارة علاقات العملاء CRM وتخطيط موارد المؤسسات ERP."}, {"c": "c2", "type": "mcq", "q": "تم إطلاق Azure بتاريخ:", "opts": ["1 فبراير 2010", "1 يناير 2000", "1 مارس 2005", "1 يونيو 2015"], "a": 0, "ex": "أُطلق Azure في 1 فبراير 2010."}, {"c": "c2", "type": "mcq", "q": "المنافس الرئيسي لـ Azure حسب المحاضرة:", "opts": ["AWS", "IBM Cloud", "Dropbox", "GitHub"], "a": 0, "ex": "ذكرت المحاضرة AWS كمنافس رئيسي."}, {"c": "c2", "type": "mcq", "q": "نموذج الدفع في Azure:", "opts": ["الدفع مقابل الاستخدام", "اشتراك سنوي ثابت", "دفع مقدم لكل الموارد", "مجاني دائماً"], "a": 0, "ex": "تدفع فقط مقابل الخدمات التي تختارها."}, {"c": "c2", "type": "mcq", "q": "عدد مراكز بيانات Azure المذكور في المحاضرة:", "opts": ["42 مركزاً", "12 مركزاً", "54 مركزاً", "200 مركز"], "a": 0, "ex": "يوجد 42، وتخطط لإضافة 12 ليصبح 54. انتبه للفرق بينهما."}, {"c": "c2", "type": "mcq", "q": "تقدم Azure أكثر من 200 خدمة مقسمة إلى:", "opts": ["18 فئة", "8 فئات", "42 فئة", "54 فئة"], "a": 0, "ex": "200 خدمة في 18 فئة."}, {"c": "c2", "type": "mcq", "q": "خدمة Azure IoT Hub تُستخدم من أجل:", "opts": ["التواصل مع الأجهزة المتصلة بالإنترنت وإدارتها", "تخزين الملفات المشتركة", "تحليل الصوت والنص", "إدارة الجدران النارية"], "a": 0, "ex": "IoT يعني إنترنت الأشياء، وهي تسهّل توصيل الأجهزة وإدارتها."}, {"c": "c2", "type": "mcq", "q": "Azure DevOps تُستخدم لـ:", "opts": ["إدارة دورة حياة التطوير وتعاون الفرق", "استضافة المواقع المجانية", "تهيئة الأقراص", "تخزين الرسائل"], "a": 0, "ex": "تدير دورة حياة التطوير البرمجي وتسرّع التسليم."}, {"c": "c2", "type": "mcq", "q": "من سلبيات Azure:", "opts": ["تعقيد الواجهة للمستخدمين الجدد", "رخص الفواتير دائماً", "ضعف عدد الخدمات", "عدم دعم لغات برمجة"], "a": 0, "ex": "الموارد غير المدارة قد تسبب فواتير مرتفعة، والواجهة معقدة للجدد."}, {"c": "c2", "type": "mcq", "q": "لأمان حسابك في Azure نحتاج لتنزيل:", "opts": ["Microsoft Authenticator", "Google Drive", "Dropbox", "GitHub Desktop"], "a": 0, "ex": "التحقق يتم عبر تطبيق Microsoft Authenticator وعمل scan للباركود."}, {"c": "c2", "type": "mcq", "q": "للاتصال بالجهاز الافتراضي VM في Azure ننزل ملف:", "opts": ["RDP", "ZIP", "PDF", "HTML"], "a": 0, "ex": "بعد connect ننزل ملف RDP لفتح الجهاز الافتراضي."}, {"c": "c3", "type": "mcq", "q": "التخزين السحابي هو:", "opts": ["حفظ البيانات عن بعد على مزودات ظاهرية متعددة", "حفظ البيانات على قرص صلب داخلي", "حفظ البيانات على أقراص مدمجة", "حفظ البيانات على بطاقات ذاكرة"], "a": 0, "ex": "يمكن الوصول للملفات من أي مكان عبر الإنترنت."}, {"c": "c3", "type": "mcq", "q": "من فوائد التخزين السحابي:", "opts": ["تدفع لما تستخدمه فقط", "شراء أقراص صلبة جديدة", "زيادة حجم قسم تقنية المعلومات", "تكاليف نسخ احتياطي أعلى"], "a": 0, "ex": "لا تحتاج الشركات لشراء عتاد جديد وتقل تكاليف الصيانة."}, {"c": "c3", "type": "mcq", "q": "من عيوب التخزين السحابي:", "opts": ["احتمال خفض السعة بناء على رغبة المزود", "سهولة مشاركة الملفات", "التحديث المستمر", "المرونة في المساحة"], "a": 0, "ex": "هذا من العيوب المذكورة، مع ضعف الولوج في الاتصالات البطيئة."}, {"c": "c3", "type": "mcq", "q": "عملية نسخ الملفات للاحتفاظ بها عند تعطل المعدات تسمى:", "opts": ["Backup", "Restore", "Upload", "Format"], "a": 0, "ex": "النسخ الاحتياطي Backup، أما استرجاعها فهو Restore."}, {"c": "c3", "type": "mcq", "q": "استرجاع الملفات المنسوخة سابقاً يسمى:", "opts": ["Restore", "Backup", "Commit", "Deploy"], "a": 0, "ex": "Restore تعني الاستعادة."}, {"c": "c3", "type": "mcq", "q": "أي مما يلي من طرق النسخ الاحتياطي للسحابة؟", "opts": ["من السحابة إلى السحابة", "من الطابعة إلى الشاشة", "من الهاتف إلى القرص المرن", "من المتصفح إلى الكاميرا"], "a": 0, "ex": "المذكور: محلي إلى سحابة عامة، سحابة إلى سحابة، وأنظمة النسخ للسحابة."}, {"c": "c3", "type": "mcq", "q": "المساحة المجانية في Dropbox حسب المحاضرة:", "opts": ["22 جيجا", "15 جيجا", "5 جيجا", "100 جيجا"], "a": 0, "ex": "الشريحة تذكر 22 جيجا. (للمعلومة: الرقم الحقيقي في الواقع 2 جيجا، لكن اعتمد رقم المحاضرة.)"}, {"c": "c3", "type": "mcq", "q": "المساحة المجانية في Google Drive:", "opts": ["15 GB", "22 GB", "2 TB", "100 GB"], "a": 0, "ex": "15 GB كبداية، ويمكن شراء مساحة أكبر."}, {"c": "c3", "type": "mcq", "q": "الاسم السابق لخدمة OneDrive هو:", "opts": ["SkyDrive", "iCloud", "Dropbox", "Azure Files"], "a": 0, "ex": "SkyDrive هو الاسم السابق للخدمة من مايكروسوفت."}, {"c": "c3", "type": "mcq", "q": "خدمة iCloud مقدمة من شركة:", "opts": ["Apple", "Google", "Microsoft", "Amazon"], "a": 0, "ex": "iCloud من أبل وتوفر مزامنة الملفات بين أجهزة الأيفون."}, {"c": "c3", "type": "mcq", "q": "خدمة Azure File Storage تُشكّل:", "opts": ["محركات أقراص مشتركة Shared Filesystems", "قواعد بيانات صغيرة", "طوابير رسائل", "ملفات سجلات يومية"], "a": 0, "ex": "تخزن الملفات المشتركة عبر الويب والمحمول."}, {"c": "c3", "type": "mcq", "q": "ترتيب التطبيق العملي في Azure Storage:", "opts": ["storage account ثم file share ثم ربطه بـ VM", "file share ثم VM ثم storage account", "VM ثم storage account ثم file share", "ربط VM ثم إنشاء الحساب"], "a": 0, "ex": "الترتيب: حساب التخزين، ثم file share، ثم الربط مع الجهاز الافتراضي."}, {"c": "c3", "type": "mcq", "q": "لربط file share مع الجهاز الافتراضي ننسخ:", "opts": ["script من خيار connect ونلصقه في CMD", "رابط الموقع ونفتحه بالمتصفح", "ملف RDP ونحفظه", "اسم الحساب فقط"], "a": 0, "ex": "ننسخ السكربت من connect ثم نلصقه في موجه الأوامر داخل الجهاز."}, {"c": "c4", "type": "mcq", "q": "Azure Blob Storage يُستخدم لتخزين:", "opts": ["ملفات غير مهيكلة كالصور والفيديو", "جداول بيانات منظمة", "رسائل الطوابير", "محركات أقراص مشتركة"], "a": 0, "ex": "Blob للبيانات غير المهيكلة."}, {"c": "c4", "type": "mcq", "q": "أي نوع Blob مخصص لسجلات يومية بإضافة بيانات لنهاية الملف؟", "opts": ["Append Blobs", "Block Blobs", "Page Blobs", "Archive Blobs"], "a": 0, "ex": "Append مخصص لنسخ بيانات إلى نهاية الملف باستمرار."}, {"c": "c4", "type": "mcq", "q": "Archive Blobs مناسبة لـ:", "opts": ["بيانات قليلة الاستخدام وتخزين طويل الأمد", "ملفات كبيرة قابلة للدمج", "قواعد بيانات صغيرة", "سجلات يومية"], "a": 0, "ex": "Archive تكلفتها منخفضة للتخزين طويل الأمد."}, {"c": "c4", "type": "mcq", "q": "Block Blobs مناسبة لـ:", "opts": ["ملفات كبيرة تُخزن في أجزاء قابلة للدمج", "بيانات نادرة الاستخدام", "سجلات يومية", "رسائل الطوابير"], "a": 0, "ex": "تخزن البيانات في أجزاء blocks صغيرة."}, {"c": "c4", "type": "mcq", "q": "Azure Queue Storage يُستخدم لتخزين:", "opts": ["رسائل بكميات كبيرة لمعالجة الوظائف بسلاسة", "صور وفيديوهات", "بيانات في جداول", "أقراص ظاهرية"], "a": 0, "ex": "Queue للرسائل الكثيرة ومعالجة الوظائف."}, {"c": "c4", "type": "mcq", "q": "Azure Table Storage يخزن البيانات على شكل:", "opts": ["جداول بتحسين سرعة الاستعلام", "ملفات فيديو", "رسائل نصية", "صور الأقراص"], "a": 0, "ex": "مثالي لبيانات لا تتطلب بنية قوية."}, {"c": "c4", "type": "mcq", "q": "تهيئة قرص أكبر من 2 تيرابايت تكون بنظام:", "opts": ["GPT", "MBR", "FAT", "ZIP"], "a": 0, "ex": "GPT للأكبر من 2TB وMBR للأصغر."}, {"c": "c4", "type": "mcq", "q": "لتهيئة القرص داخل ويندوز نفتح:", "opts": ["Disk Management", "Task Manager", "Notepad", "Paint"], "a": 0, "ex": "من Disk Management نهيئ القرص وننشئ وحدة تخزين."}, {"c": "c4", "type": "mcq", "q": "نظام الملفات المقترح عند تنسيق القرص:", "opts": ["NTFS", "HTML", "SQL", "SSH"], "a": 0, "ex": "ذكرت المحاضرة NTFS أو ReFS."}, {"c": "c5", "type": "mcq", "q": "الاستضافة المشتركة هي الأنسب لـ:", "opts": ["الشركات الناشئة ذات الميزانية المحدودة", "المواقع الضخمة جداً", "من يريد تحكماً كاملاً بالسيرفر", "من يريد IP خاص"], "a": 0, "ex": "رخيصة لأن المواقع تشترك بموارد الخادم."}, {"c": "c5", "type": "mcq", "q": "عيب الاستضافة المشتركة:", "opts": ["أداء أقل وتأثر بحركة المرور الكبيرة", "تكلفة مرتفعة جداً", "صعوبة الإعداد", "عدم دعم الدومين"], "a": 0, "ex": "مشاركة الموارد تؤثر على الأداء."}, {"c": "c5", "type": "mcq", "q": "VPS اختصار:", "opts": ["Virtual Private Server", "Very Public Server", "Visual Personal System", "Virtual Public Storage"], "a": 0, "ex": "VPS مساحة منفصلة ضمن السيرفر بموارد مستقلة."}, {"c": "c5", "type": "mcq", "q": "الاستضافة التي تمنح عنوان IP خاص وتحكماً كاملاً كمسؤول:", "opts": ["المخصصة Dedicated", "المشتركة", "المجانية", "السحابية فقط"], "a": 0, "ex": "تستخدم سيرفراً كاملاً لموقعك دون مواقع الآخرين."}, {"c": "c5", "type": "mcq", "q": "ميزة الاستضافة السحابية الأساسية:", "opts": ["استضافة الموقع على أكثر من سيرفر لتفادي التوقف", "مشاركة سيرفر واحد مع آلاف المواقع", "خادم فعلي واحد ثابت", "دعم لغة واحدة"], "a": 0, "ex": "توزيع الموقع على عدة خوادم يضمن عمله بكفاءة."}, {"c": "c5", "type": "mcq", "q": "العلاقة بين الدومين والاستضافة:", "opts": ["الدومين هو العنوان والاستضافة هي المنزل", "الدومين هو المنزل والاستضافة العنوان", "كلاهما نفس الشيء", "الدومين هو الخادم نفسه"], "a": 0, "ex": "الدومين عنوان الموقع، والاستضافة مكان حفظ ملفاته."}, {"c": "c5", "type": "mcq", "q": "نظام DNS وظيفته:", "opts": ["ربط اسم الدومين بعنوان IP", "تشفير الملفات", "ضغط الصور", "رفع الملفات"], "a": 0, "ex": "يسمح بالدخول بالأسماء بدلاً من الأرقام."}, {"c": "c5", "type": "mcq", "q": "SEO هو:", "opts": ["تحسين ترتيب الموقع في نتائج البحث", "تشفير بيانات الموقع", "رفع الموقع على السيرفر", "نسخ الموقع احتياطياً"], "a": 0, "ex": "يزيد الزيارات المجانية غير المدفوعة."}, {"c": "c5", "type": "mcq", "q": "Meta Tags توضع داخل:", "opts": ["head في صفحة الويب", "footer", "body فقط", "ملف الصور"], "a": 0, "ex": "توضع في الرأس ولا يراها المستخدم."}, {"c": "c5", "type": "mcq", "q": "من عيوب الاستضافة المجانية:", "opts": ["إعلانات قد تظهر على موقعك", "دعم فني غير محدود", "مساحة تخزين لا نهائية", "أداء سريع مستقر دائماً"], "a": 0, "ex": "إعلانات وأداء غير مستقر وقيود على المساحة."}, {"c": "c5", "type": "mcq", "q": "لتثبيت WordPress في الاستضافة المجانية استخدمنا:", "opts": ["Softaculous", "Notepad", "RDP", "Authenticator"], "a": 0, "ex": "Softaculous مثبت تطبيقات في لوحة التحكم."}, {"c": "c6", "type": "mcq", "q": "Git هو:", "opts": ["نظام لإدارة النسخ وتتبع الملفات", "منصة استضافة كودات", "متصفح ويب", "نظام تشغيل"], "a": 0, "ex": "يسمح بحفظ الملفات وتتبع نسخها المختلفة."}, {"c": "c6", "type": "mcq", "q": "Commit في Git تشبه:", "opts": ["نقطة الحفظ في الألعاب", "حذف المشروع", "رفع الموقع", "الدومين"], "a": 0, "ex": "Save Point للعودة إلى نسخة معينة."}, {"c": "c6", "type": "mcq", "q": "Branch هو:", "opts": ["نسخة من المستودع يعمل عليها بشكل منفصل", "حذف للمستودع", "اسم المستخدم", "أمر للرفع"], "a": 0, "ex": "يُطور باستقلالية ثم يُدمج مع الأصل."}, {"c": "c6", "type": "mcq", "q": "الأمر الذي ينشئ مستودعاً جديداً:", "opts": ["git init", "git push", "git pull", "git status"], "a": 0, "ex": "init لتهيئة مستودع جديد."}, {"c": "c6", "type": "mcq", "q": "الأمر الذي يعرض حالة الملفات:", "opts": ["git status", "git add", "git log", "git clone"], "a": 0, "ex": "status يبين هل هناك تغييرات."}, {"c": "c6", "type": "mcq", "q": "عيب Git:", "opts": ["لا يتعامل بكفاءة مع الملفات الثنائية كالصور والفيديو", "مركزي فقط", "بطيء في تتبع التعديلات", "لا يسمح بالتفرعات"], "a": 0, "ex": "الملفات الثنائية من عيوبه."}, {"c": "c6", "type": "mcq", "q": "ميزة Git:", "opts": ["نظام لامركزي يسمح بتفرعات متعددة", "يتطلب إنترنت دائماً", "لا يدعم العمل الجماعي", "لا يحفظ النسخ القديمة"], "a": 0, "ex": "اللامركزية والتفرعات من مميزاته."}, {"c": "c6", "type": "mcq", "q": "Stage في Git هي:", "opts": ["المرحلة الأولى لإعلام Git بالتغييرات المراد حفظها", "حذف المستودع", "اسم الفرع", "الدمج"], "a": 0, "ex": "يتم الحفظ على مرحلتين: Stage ثم Commit."}, {"c": "c6", "type": "mcq", "q": "الأمر git push:", "opts": ["يرفع التغييرات من المحلي إلى المستودع البعيد", "يجلب التحديثات من البعيد", "ينشئ ملفاً", "يمسح الشاشة"], "a": 0, "ex": "push رفع وpull جلب."}, {"c": "c6", "type": "mcq", "q": "الأمر git pull:", "opts": ["يجلب التحديثات من الفرع البعيد ويدمجها", "يرفع التغييرات", "يحفظ commit", "ينشئ مستودعاً"], "a": 0, "ex": "pull لجلب وتحديث الفرع الحالي."}, {"c": "c7", "type": "mcq", "q": "GitHub هي:", "opts": ["منصة استضافة أكواد تملكها مايكروسوفت", "نظام إدارة إصدارات محلي", "نظام تشغيل", "متصفح"], "a": 0, "ex": "GitHub منصة على الإنترنت مبنية فوق Git."}, {"c": "c7", "type": "mcq", "q": "الفرق بين Git وGitHub:", "opts": ["Git محلي بدون إنترنت وGitHub على الإنترنت", "Git على الإنترنت وGitHub محلي", "كلاهما محلي", "كلاهما يحتاج إنترنت"], "a": 0, "ex": "Git يعمل على جهازك، وGitHub للتعاون والاستضافة."}, {"c": "c7", "type": "mcq", "q": "الأمر الذي ينسخ مستودعاً من الإنترنت إلى جهازك:", "opts": ["git clone <url>", "git init", "git merge", "git remote -v"], "a": 0, "ex": "clone ينسخ المستودع."}, {"c": "c7", "type": "mcq", "q": "الأمر الذي يدمج فرعاً بآخر:", "opts": ["git merge <branch>", "git checkout", "git branch", "git log"], "a": 0, "ex": "merge للدمج وcheckout للانتقال."}, {"c": "c7", "type": "mcq", "q": "للانتقال إلى فرع آخر نستخدم:", "opts": ["git checkout <branch>", "git merge", "git push", "git add"], "a": 0, "ex": "checkout للانتقال بين الفروع."}, {"c": "c7", "type": "mcq", "q": "لربط المستودع المحلي بـ GitHub:", "opts": ["git remote add origin <url>", "git remote remove origin", "git clone", "git pull"], "a": 0, "ex": "add origin يربط، وremove يلغي الربط."}, {"c": "c7", "type": "mcq", "q": "لرفع التغييرات إلى GitHub:", "opts": ["git push origin main", "git pull origin main", "git status", "git init"], "a": 0, "ex": "هذا أمر الرفع للفرع main."}, {"c": "c7", "type": "mcq", "q": "من عيوب GitHub:", "opts": ["بعض المشاريع الخاصة تتطلب حساباً مدفوعاً", "عدم دعم العمل الجماعي", "غياب تتبع التغييرات", "لا يوجد مجتمع مطورين"], "a": 0, "ex": "ومن عيوبه أيضاً مخاطر أمنية محتملة على البيانات."}, {"c": "c7", "type": "mcq", "q": "لإنشاء رسالة حفظ التغييرات نستخدم:", "opts": ["git commit -m \"message\"", "git add -m", "git push -m", "git log -m"], "a": 0, "ex": "commit مع -m ورسالة."}, {"c": "c1", "type": "mcq", "q": "السحابة في الحوسبة السحابية هي:", "opts": ["جهاز خادم يُوصل إليه عبر الإنترنت", "غيوم حقيقية في السماء", "قرص صلب داخل الحاسوب", "شبكة محلية في المكتب"], "a": 0, "ex": "ليست سحابة الجو، بل خادم إلكتروني تُخزن عليه البيانات."}, {"c": "c1", "type": "mcq", "q": "كان مصطلح \"السحابة\" يُستخدم في البداية للإشارة إلى:", "opts": ["الإنترنت في مخططات الشبكات", "الذكاء الاصطناعي", "الأقراص الصلبة", "أنظمة التشغيل"], "a": 0, "ex": "رُسمت سحابة لتمثيل نقل البيانات عبر الإنترنت."}, {"c": "c1", "type": "mcq", "q": "مزود الخدمة السحابية Cloud Service Provider هو:", "opts": ["شركة تقدم الموارد والتخزين وفق اتفاقية خدمة", "جهاز المستخدم", "متصفح الإنترنت", "برنامج مكافحة فيروسات"], "a": 0, "ex": "تحدد الاتفاقية واجبات ومسؤوليات كل طرف."}, {"c": "c1", "type": "mcq", "q": "قد توظف الشركات الكبيرة طرفاً ثالثاً من أجل:", "opts": ["تقييم جودة الخدمة المقدمة من المزود", "شراء الأجهزة", "تصميم المواقع", "تنظيف الأجهزة"], "a": 0, "ex": "مهمته تقييم جودة خدمة المزود."}, {"c": "c1", "type": "mcq", "q": "\"مركزية المهام\" تعني التركيز على:", "opts": ["تلبية احتياجات المستخدمين عبر التطبيقات", "التطبيقات نفسها كمعالجة النصوص", "إنشاء البنية التحتية", "ربط الأجهزة ببعضها"], "a": 0, "ex": "السحابة تركز على المهام لا على التطبيقات."}, {"c": "c1", "type": "mcq", "q": "\"مركزية التطبيقات والمستندات\" تعني أنها:", "opts": ["تُشغَّل وتُخزن وتُحرر على المزودات من أي جهاز متصل", "تُخزن على جهاز المستخدم فقط", "لا تحتاج إنترنت", "تُشارك مع جهة واحدة فقط"], "a": 0, "ex": "هذا يوفر الإتاحة الدائمة ويعزز التعاون."}, {"c": "c1", "type": "mcq", "q": "خاصية \"الذكاء\" في السحابة تعني:", "opts": ["استخراج وتحليل البيانات الضخمة المخزنة", "ربط آلاف الأجهزة", "حماية أمن المعلومات", "سهولة نشر التطبيقات"], "a": 0, "ex": "الذكاء مطلب لاستخراج وتحليل البيانات الضخمة."}, {"c": "c1", "type": "mcq", "q": "\"البرمجة\" في خصائص السحابة مطلب أساسي مثل:", "opts": ["حماية أمن المعلومات", "تقليل التكلفة", "التواصل الاجتماعي", "اختيار المتصفح"], "a": 0, "ex": "البرمجة ضرورية للمهام مثل حماية أمن المعلومات."}, {"c": "c1", "type": "mcq", "q": "\"سهولة التنفيذ\" تعني أن المؤسسة:", "opts": ["تنشر التطبيقات دون شراء أجهزة أو تراخيص", "تشتري أجهزة جديدة أولاً", "تحتاج خبرة تركيب", "تدفع صيانة سنوية للأجهزة"], "a": 0, "ex": "لا حاجة لشراء الأجهزة أو التراخيص أو التركيب."}, {"c": "c1", "type": "mcq", "q": "\"قابلية التوسع\" تعني:", "opts": ["زيادة السعة دون شراء أجهزة وبرمجيات جديدة", "تقليل عدد المستخدمين", "تقليل الأمان", "شراء موسعات لكل مستخدم"], "a": 0, "ex": "تُجمع القدرات وتُطرح حسب حمل الشبكة."}, {"c": "c1", "type": "mcq", "q": "من تحديات الحوسبة السحابية:", "opts": ["مخاوف الامتثال القانوني والتنظيمي", "الدفع حسب الاستخدام", "سعة تخزين غير محددة", "التحديث التلقائي"], "a": 0, "ex": "من التحديات أيضاً الأمن والاعتماد على المزود ومشاكل الاتصال."}, {"c": "c1", "type": "mcq", "q": "من مميزات الحوسبة السحابية:", "opts": ["الدفع مقابل الاستخدام وتحديث البرامج تلقائياً", "الحاجة لشراء الأجهزة", "الاعتماد على الإنترنت فقط", "فقدان السيطرة"], "a": 0, "ex": "وكذلك سعة تخزين غير محددة وصديقة للبيئة."}, {"c": "c1", "type": "mcq", "q": "عيب \"الحاجة للتدريب والتأهيل\" يعني أن السحابة:", "opts": ["تتطلب معرفة تقنية وخبرة قد لا تتوفر للبعض", "لا تحتاج أي خبرة", "تعمل دون إنترنت", "تُدار آلياً بالكامل"], "a": 0, "ex": "الاستخدام يتطلب معرفة تقنية واسعة."}, {"c": "c1", "type": "mcq", "q": "موقع Box.com مثال على تطبيقات:", "opts": ["النسخ الاحتياطي وتخزين البيانات", "التجارة الإلكترونية", "مؤتمرات الفيديو", "مكافحة الفيروسات"], "a": 0, "ex": "ذُكر مع Google G Suite كمثال لتخزين البيانات."}, {"c": "c1", "type": "mcq", "q": "فيسبوك وتويتر ولينكد إن أمثلة على:", "opts": ["وسائل التواصل الاجتماعي المعتمدة على السحابة", "برامج الفيروسات", "التجارة الإلكترونية", "التعليم فقط"], "a": 0, "ex": "تتيح التواصل ومشاركة الوسائط في الوقت الفعلي."}, {"c": "c1", "type": "mcq", "q": "Kaspersky وSophos أمثلة على:", "opts": ["برامج مكافحة الفيروسات السحابية", "منصات تحليل البيانات", "مواقع التجارة", "برامج المؤتمرات"], "a": 0, "ex": "ذُكرا كأشهر برامج مكافحة الفيروسات السحابية."}, {"c": "c1", "type": "mcq", "q": "خدمة Sky Drive تقدمها شركة:", "opts": ["Microsoft", "Google", "Amazon", "IBM"], "a": 0, "ex": "ذُكرت في جدول الشركات تحت مايكروسوفت."}, {"c": "c1", "type": "mcq", "q": "خدمة Elastic Cloud Search وAuto Scaling تقدمها:", "opts": ["Amazon", "Google", "Microsoft", "IBM"], "a": 0, "ex": "ذُكرت تحت شركة أمازون."}, {"c": "c1", "type": "mcq", "q": "Google Documents وSpreadsheets وPresentations تقدمها:", "opts": ["Google", "Amazon", "Microsoft", "IBM"], "a": 0, "ex": "هذه خدمات جوجل السحابية."}, {"c": "c2", "type": "mcq", "q": "الهدف من Microsoft Cloud: ليس منها:", "opts": ["بيع الأجهزة الحاسوبية", "تحقيق مرونة أكبر في العمل", "توفير أمان وخصوصية عالية", "تمكين التطوير والابتكار"], "a": 0, "ex": "الأهداف: وصول للموارد، كفاءة وتقليل تكاليف، مرونة، أمان، ابتكار."}, {"c": "c2", "type": "mcq", "q": "من لغات البرمجة التي تدعمها Azure:", "opts": ["Java وNode.js وC#", "COBOL فقط", "Pascal فقط", "HTML فقط"], "a": 0, "ex": "تدعم Azure لغات برمجة متعددة."}, {"c": "c2", "type": "mcq", "q": "حسب المحاضرة، نسبة الشركات التي تستخدم Azure:", "opts": ["80 بالمائة", "20 بالمائة", "50 بالمائة", "100 بالمائة"], "a": 0, "ex": "ذكرت 80 بالمائة من الشركات."}, {"c": "c2", "type": "mcq", "q": "خدمة App Service في Azure تُستخدم لـ:", "opts": ["استضافة تطبيقات الويب والجوال", "تخزين الملفات", "ربط الشبكات", "تحليل الصوت"], "a": 0, "ex": "تتيح للمطورين الاستضافة بسهولة."}, {"c": "c2", "type": "mcq", "q": "من خدمات التحليل والذكاء الاصطناعي في Azure:", "opts": ["Azure Machine Learning", "Azure Firewall", "Blob Storage", "Virtual Network"], "a": 0, "ex": "هي خدمة التعلم الآلي."}, {"c": "c2", "type": "mcq", "q": "Azure Cognitive Services للتعرف على:", "opts": ["الصوت والنص", "الأقراص الصلبة", "عناوين IP", "الجدران النارية"], "a": 0, "ex": "خدمة التعرف على الصوت والنص."}, {"c": "c2", "type": "mcq", "q": "من خدمات الشبكات والأمان في Azure:", "opts": ["Firewall وVirtual Network Gateway", "Blob وQueue", "App Service", "IoT Hub"], "a": 0, "ex": "تشمل الجدران النارية وتوصيل الشبكة الظاهرية."}, {"c": "c2", "type": "mcq", "q": "\"الحوسبة الخضراء\" في مايكروسوفت تعني:", "opts": ["حوسبة مستدامة تقلل استهلاك الطاقة والانبعاثات", "ألواناً جديدة للواجهة", "أجهزة بلون أخضر", "حوسبة بلا إنترنت"], "a": 0, "ex": "تهدف لتحسين كفاءة الطاقة وصداقة البيئة."}, {"c": "c2", "type": "mcq", "q": "من إيجابيات Azure:", "opts": ["المرونة وقابلية التوسع ودعم متعدد المنصات", "التعقيد في الاستخدام", "الفواتير المرتفعة", "بطء الأداء"], "a": 0, "ex": "الإيجابيات: مرونة، خدمات واسعة، أمان، تكامل مع منتجات مايكروسوفت."}, {"c": "c2", "type": "mcq", "q": "من تحديات Azure:", "opts": ["التنافس الشديد ومخاوف الأمان والخصوصية", "قلة المراكز", "قلة الخدمات", "غياب الدعم"], "a": 0, "ex": "وتشمل تعقيد الاستخدام وعوامل التكلفة والحاجة للابتكار."}, {"c": "c2", "type": "mcq", "q": "مدة تفعيل الـ sandbox في Microsoft Training:", "opts": ["ساعة ثم تحديثها", "يوم كامل", "أسبوع كامل", "شهر كامل"], "a": 0, "ex": "تُستخدم خدماتها لمدة ساعة ثم تُحدّث."}, {"c": "c2", "type": "mcq", "q": "لماذا لا نستخدم خدمات Azure مباشرة بحساب الطالب؟", "opts": ["لأنها مدفوعة", "لأنها غير موجودة", "لأنها تتطلب RDP", "لأنها لا تعمل بالإنترنت"], "a": 0, "ex": "لذلك نستخدم Microsoft Training Sandbox."}, {"c": "c2", "type": "mcq", "q": "بعد إنشاء الجهاز الافتراضي وظهور Your deployment is complete نضغط:", "opts": ["Go to resource", "Delete", "Cancel", "Redeploy"], "a": 0, "ex": "للوصول إلى موارد الجهاز."}, {"c": "c2", "type": "mcq", "q": "ما خدمة Azure التي تقدم الخوادم الظاهرية؟", "opts": ["Virtual Machines", "IoT Hub", "Cognitive Services", "DevOps"], "a": 0, "ex": "من خدمات الحوسبة السحابية في Azure."}, {"c": "c3", "type": "mcq", "q": "التخزين السحابي الشخصي جاء كحل لمشكلة:", "opts": ["تلف وضياع وسرقة وسائط التخزين الثانوية", "بطء الإنترنت", "ارتفاع الأسعار", "قلة التطبيقات"], "a": 0, "ex": "وسائط التخزين الثانوية تتلف وتُسرق ومحدودة السعة."}, {"c": "c3", "type": "mcq", "q": "من وسائط التخزين الثانوية:", "opts": ["القرص المرن والأقراص المدمجة وبطاقات الذاكرة", "القرص الصلب الداخلي", "معالج الجهاز", "شاشة الحاسوب"], "a": 0, "ex": "توجد خارج الحاسوب وتنقل الملفات لجهات أخرى."}, {"c": "c3", "type": "mcq", "q": "عيب التخزين السحابي الشخصي:", "opts": ["عدم الثقة في مزود الخدمة", "محدودية السعة", "سهولة التلف", "عدم القدرة على المشاركة"], "a": 0, "ex": "من عيوبه عدم الثقة في المزود."}, {"c": "c3", "type": "mcq", "q": "تقوم الشركات بالنسخ الاحتياطي لأنه:", "opts": ["جزء روتيني يحمي من تعطل المعدات والأخطاء", "اختياري لا يهم", "يُستخدم للألعاب", "يزيد حجم الملفات"], "a": 0, "ex": "النسخ الاحتياطي روتيني في غالبية الشركات."}, {"c": "c3", "type": "mcq", "q": "يؤدي النسخ للسحابة إلى حماية بياناتك:", "opts": ["في موقع بعيد عند الفشل أو الكارثة", "على نفس الجهاز", "داخل الطابعة", "داخل المتصفح"], "a": 0, "ex": "يحمي نسخة بياناتك خارج الموقع."}, {"c": "c3", "type": "mcq", "q": "ما المساحة المجانية الافتراضية في OneDrive حسب المحاضرة؟", "opts": ["15 غيغابايت", "22 غيغابايت", "2 غيغابايت", "100 غيغابايت"], "a": 0, "ex": "منحت مايكروسوفت 15 غيغابايت ابتداء."}, {"c": "c3", "type": "mcq", "q": "أي تطبيق مما يلي هو تخزين سحابي من مايكروسوفت؟", "opts": ["OneDrive", "iCloud", "Dropbox", "Google Drive"], "a": 0, "ex": "OneDrive وSkyDrive من مايكروسوفت."}, {"c": "c3", "type": "mcq", "q": "سعات Google Drive الإضافية المدفوعة تتراوح من:", "opts": ["100 GB إلى 30 TB", "15 GB إلى 100 GB", "1 TB إلى 2 TB", "5 GB إلى 50 GB"], "a": 0, "ex": "باشتراك شهري."}, {"c": "c3", "type": "mcq", "q": "خدمة Azure Storage هي:", "opts": ["خدمة تخزين سحابية متكاملة من Microsoft Azure", "خدمة جوجل", "برنامج رسم", "متصفح"], "a": 0, "ex": "تتيح تخزين وتكرار وتحميل البيانات بحجم كبير."}, {"c": "c3", "type": "mcq", "q": "من الخدمات التي توفرها Azure File Storage:", "opts": ["تخزين الملفات المشتركة عبر الويب والمحمول", "معالجة الرسائل", "تخزين الجداول", "تخزين الصور الأرشيفية"], "a": 0, "ex": "وتُشكل Shared Filesystems مثل Windows Server."}, {"c": "c3", "type": "mcq", "q": "لإنشاء file share جديد من Data storage نختار:", "opts": ["File shares", "Queues", "Tables", "Containers"], "a": 0, "ex": "نضغط file share ثم نضيف مشاركة جديدة."}, {"c": "c3", "type": "mcq", "q": "عند إنشاء file share نحذف التحديد عند:", "opts": ["Backup", "Tier", "Name", "Performance"], "a": 0, "ex": "ثم نضغط Next."}, {"c": "c4", "type": "mcq", "q": "عدد أنواع Azure Storage في المحاضرة:", "opts": ["4 أنواع", "2 أنواع", "6 أنواع", "8 أنواع"], "a": 0, "ex": "Blob وFile وQueue وTable."}, {"c": "c4", "type": "mcq", "q": "لإنشاء container في Blob نذهب إلى:", "opts": ["Data storage ثم Containers", "Networking", "Security", "Events"], "a": 0, "ex": "ثم نضغط Container جديدة ونكتب الاسم."}, {"c": "c4", "type": "mcq", "q": "Page Blobs تُستخدم لـ:", "opts": ["ملفات ببيانات قليلة مثل قواعد البيانات الصغيرة", "ملفات كبيرة جداً", "سجلات يومية", "بيانات أرشيفية"], "a": 0, "ex": "هذا استخدام Page Blobs."}, {"c": "c4", "type": "mcq", "q": "لإنشاء Queue جديدة نذهب إلى:", "opts": ["Data storage ثم Queues", "Containers", "File shares", "Tables"], "a": 0, "ex": "ثم نضغط Queue ونكتب الاسم."}, {"c": "c4", "type": "mcq", "q": "لإضافة رسالة داخل Queue نضغط على:", "opts": ["اسم الـ Queue ثم Add message", "Delete", "Refresh", "Create account"], "a": 0, "ex": "ثم نكتب نص الرسالة ومدة انتهائها."}, {"c": "c4", "type": "mcq", "q": "لإنشاء قرص على جهاز VM نذهب إلى:", "opts": ["Settings ثم Disks", "Overview", "Activity log", "Tags"], "a": 0, "ex": "ثم Create and attach a new disk."}, {"c": "c4", "type": "mcq", "q": "أنواع الأقراص في Azure تشمل:", "opts": ["Standard HDD وStandard SSD وPremium SSD", "NTFS وReFS", "MBR وGPT", "Blob وQueue"], "a": 0, "ex": "أنواع القرص حسب الأداء المطلوب."}, {"c": "c4", "type": "mcq", "q": "أي خيار نختاره لقرص أصغر من 2 تيرابايت؟", "opts": ["MBR", "GPT", "NTFS", "ReFS"], "a": 0, "ex": "GPT للأكبر من 2 تيرابايت."}, {"c": "c4", "type": "mcq", "q": "لإنشاء وحدة تخزين على مساحة غير مخصصة نختار:", "opts": ["New Simple Volume", "Format Disk", "Delete Volume", "Extend Volume"], "a": 0, "ex": "بعد النقر بزر الفأرة الأيمن على Unallocated Space."}, {"c": "c5", "type": "mcq", "q": "استضافة الويب هي:", "opts": ["استئجار مساحة على خادم لحفظ ملفات الموقع", "شراء دومين فقط", "برنامج تصميم", "شبكة اجتماعية"], "a": 0, "ex": "الاستضافة تعني توفير مكان لملفات موقعك."}, {"c": "c5", "type": "mcq", "q": "الاستضافة غالباً تكون عبارة عن:", "opts": ["حاسوب عالي الإمكانيات في Data Center", "هاتف ذكي", "طابعة", "ذاكرة محمولة"], "a": 0, "ex": "توجد في مركز بيانات."}, {"c": "c5", "type": "mcq", "q": "أنواع الاستضافة الرئيسية في المحاضرة:", "opts": ["مشتركة ومخصصة وسحابية", "مجانية فقط", "محلية فقط", "مؤقتة فقط"], "a": 0, "ex": "مع VPS والمجانية."}, {"c": "c5", "type": "mcq", "q": "ميزة الاستضافة المشتركة:", "opts": ["تكلفة منخفضة وسهولة الاستخدام", "أداء عالي جداً", "تحكم كامل", "IP خاص"], "a": 0, "ex": "رخيصة لكنها أقل أداءً."}, {"c": "c5", "type": "mcq", "q": "ميزة استضافة VPS:", "opts": ["توازن بين السعر والأداء والأمان", "أرخص خيار", "تُشارك كل مواردها", "لا تدعم أنظمة متعددة"], "a": 0, "ex": "موارد مستقلة وخادم بسرعة مستقرة."}, {"c": "c5", "type": "mcq", "q": "عيب الاستضافة المخصصة:", "opts": ["تكلفة مرتفعة وصعوبة الإعداد والصيانة", "أداء ضعيف", "موارد مشتركة", "عدم التحكم"], "a": 0, "ex": "ميزتها الأداء العالي والموارد المخصصة."}, {"c": "c5", "type": "mcq", "q": "عيب الاستضافة السحابية:", "opts": ["تكلفة مرتفعة وقد تتطلب معرفة تقنية", "أداء بطيء", "لا تتوسع", "لا تضمن بقاء الموقع"], "a": 0, "ex": "ميزتها قابلية التوسع وبقاء الموقع شغالاً."}, {"c": "c5", "type": "mcq", "q": "استضافة الويب والاستضافة السحابية:", "opts": ["السحابية نوع من استضافة الويب", "كلاهما نفس الشيء دائماً", "الويب نوع من السحابية", "لا علاقة بينهما"], "a": 0, "ex": "الاستضافة السحابية شكل منها لكن العكس غير صحيح."}, {"c": "c5", "type": "mcq", "q": "الدومين هو:", "opts": ["العنوان الذي يكتبه الناس لزيارة موقعك", "مكان حفظ الملفات", "سلسلة أرقام IP", "نظام تشغيل"], "a": 0, "ex": "الاستضافة هي مكان الملفات."}, {"c": "c5", "type": "mcq", "q": "عنوان IP هو:", "opts": ["سلسلة أرقام تحدد موقع الجهاز في الشبكة", "اسم الموقع", "لغة برمجة", "برنامج حماية"], "a": 0, "ex": "يصعب تذكره فتم تطوير الدومينات."}, {"c": "c5", "type": "mcq", "q": "استخدام كلمة keyword في الدومين يفيد في:", "opts": ["تحسين تصنيف الموقع في محركات البحث", "زيادة سرعة الإنترنت", "تقليل التكلفة", "تغيير IP"], "a": 0, "ex": "مثال: كلمة books لموقع بيع الكتب."}, {"c": "c5", "type": "mcq", "q": "الميتا تاج Meta Tag يحتوي معلومات مثل:", "opts": ["الوصف والكلمات المفتاحية والمؤلف واللغة", "كلمة المرور", "بيانات البطاقة", "الصور فقط"], "a": 0, "ex": "تفيد محركات البحث ولا يراها المستخدم."}, {"c": "c5", "type": "mcq", "q": "من مميزات الاستضافة المجانية:", "opts": ["لا تكلفة مالية وسهولة الاستخدام", "دعم فني غير محدود", "مساحة غير محدودة", "بلا إعلانات"], "a": 0, "ex": "مناسبة للمواقع الصغيرة محدودة الحركة."}, {"c": "c5", "type": "mcq", "q": "موقع الاستضافة المجانية الذي سجلنا فيه:", "opts": ["ProFreeHost", "GitHub", "Dropbox", "Azure"], "a": 0, "ex": "ذُكر في التطبيق العملي."}, {"c": "c5", "type": "mcq", "q": "النطاق الذي اخترناه في الاستضافة المجانية:", "opts": ["unaux.com", "github.io", "azure.com", "dropbox.com"], "a": 0, "ex": "اخترنا النوع الثاني unaux.com."}, {"c": "c6", "type": "mcq", "q": "فائدة Git: التراجع إلى:", "opts": ["أي نسخة سابقة لتفادي الأخطاء", "آخر نسخة فقط", "نسخة محذوفة", "لا يمكن التراجع"], "a": 0, "ex": "يتيح تتبع جميع النسخ بحرية."}, {"c": "c6", "type": "mcq", "q": "يتيح Git لأفراد الفريق:", "opts": ["العمل في وقت واحد على نفس الملفات لكل فرد نسخته", "العمل بالتتابع فقط", "عمل شخص واحد", "حجب التعديلات"], "a": 0, "ex": "لكل فرد نسخته."}, {"c": "c6", "type": "mcq", "q": "يُستخدم Git مع خدمات مثل:", "opts": ["Heroku وNetlify لتحديث الموقع بسهولة", "Excel فقط", "Word", "Paint"], "a": 0, "ex": "وهذا يغني عن الرفع التقليدي بـ FTP."}, {"c": "c6", "type": "mcq", "q": "Repository في Git هو:", "opts": ["المشروع بكل ملفاته ونسخه وفروعه", "ملف واحد", "اسم المستخدم", "أمر الرفع"], "a": 0, "ex": "يُختصر Repo وهو المستودع."}, {"c": "c6", "type": "mcq", "q": "Branch يسمح لك:", "opts": ["بالتطوير والاختبار دون التأثير على الملف الأصلي", "حذف الأصلي", "إخفاء الملفات", "تشفير الملفات"], "a": 0, "ex": "ثم يمكن دمجه مع الأصل."}, {"c": "c6", "type": "mcq", "q": "أي مما يلي ليس من أهداف Git؟", "opts": ["تصميم واجهات الألعاب", "إدارة النسخ", "التعاون بين المطورين", "إدارة التفرعات"], "a": 0, "ex": "الأهداف: النسخ، التعاون، التفرعات، الأمان والموثوقية، المرونة والأداء."}, {"c": "c6", "type": "mcq", "q": "الأمر git add txt1.txt:", "opts": ["يضيف الملف إلى المستودع للتتبع", "يرفع الملف", "يحذف الملف", "ينشئ فرعاً"], "a": 0, "ex": "add يجهز الملفات للحفظ."}, {"c": "c6", "type": "mcq", "q": "الأمر git commit -m \"name\":", "opts": ["يحفظ التغييرات مع رسالة", "يرفع التغييرات", "يجلب التحديثات", "يمسح الشاشة"], "a": 0, "ex": "-m تعني message."}, {"c": "c6", "type": "mcq", "q": "يساعد Git الأفراد في:", "opts": ["إدارة مشاريعهم الشخصية وحفظ نسخ كل مرحلة", "حذف الملفات", "شراء الأجهزة", "تصميم الدومين"], "a": 0, "ex": "من استخدامات Git الشخصية."}, {"c": "c6", "type": "mcq", "q": "الأمر الذي يمسح الشاشة في المحاضرة:", "opts": ["Clear", "Git init", "Git add", "Git pull"], "a": 0, "ex": "Clear يمسح الشاشة."}, {"c": "c7", "type": "mcq", "q": "من أهداف GitHub:", "opts": ["تسهيل التعاون والعمل الجماعي", "بيع الأجهزة", "شراء الدومين", "تصميم الشبكات"], "a": 0, "ex": "ومنها الوصول المفتوح وإدارة المشاريع."}, {"c": "c7", "type": "mcq", "q": "من مميزات GitHub:", "opts": ["التحكم في الإصدارات وتتبع المشكلات", "الاعتماد على الإنترنت فقط", "عدم دعم الفرق", "غياب المجتمع"], "a": 0, "ex": "وأدوات التعاون والتفاعل المجتمعي."}, {"c": "c7", "type": "mcq", "q": "فوائد GitHub: تتبع التغييرات يعني:", "opts": ["مراجعة التغييرات الجديدة في الكود بسهولة", "حذف الكود", "إخفاء الكود", "ضغط الكود"], "a": 0, "ex": "هذه إحدى فوائده."}, {"c": "c7", "type": "mcq", "q": "GitHub يعتمد في الأساس على:", "opts": ["نظام التحكم في النسخ الموزع Git", "نظام Windows", "Excel", "Photoshop"], "a": 0, "ex": "يتتبع التغييرات على ملفات المشروع."}, {"c": "c7", "type": "mcq", "q": "أداة تُثبَّت في VS Code للتكامل مع GitHub:", "opts": ["GitHub Pull Requests", "Paint", "Excel", "Notepad"], "a": 0, "ex": "نثبتها من Extensions ثم ندخل بحساب GitHub."}, {"c": "c7", "type": "mcq", "q": "بعد تسجيل الدخول لـ GitHub من VS Code نضغط:", "opts": ["Authorize", "Delete", "Cancel", "Fork"], "a": 0, "ex": "للسماح لـ VS Code بالوصول."}, {"c": "c7", "type": "mcq", "q": "لإنشاء موقع على GitHub نفعّل:", "opts": ["GitHub Pages", "Copilot", "Actions فقط", "Wiki"], "a": 0, "ex": "ثم نزور الموقع عبر Visit site."}, {"c": "c7", "type": "mcq", "q": "عند إنشاء مستودع على GitHub نحدد:", "opts": ["عام Public أو خاص Private", "اسم الجهاز", "نوع المعالج", "لغة النظام"], "a": 0, "ex": "العام يطلع عليه الجميع."}, {"c": "c7", "type": "mcq", "q": "الأمر git branch -M main:", "opts": ["يعيد تسمية الفرع إلى main", "يحذف الفرع", "يدمج الفروع", "يرفع التغييرات"], "a": 0, "ex": "يُستخدم لتحديد اسم الفرع الرئيسي."}, {"c": "c7", "type": "mcq", "q": "الأمر git push origin main --force:", "opts": ["يحذف النسخ القديمة ويرفع الجديدة", "يجلب التحديثات", "يعرض الفروع", "ينشئ مستودعاً"], "a": 0, "ex": "force يفرض الرفع."}, {"c": "c7", "type": "mcq", "q": "الأمر git remote -v:", "opts": ["يعرض العناوين المرتبطة بالمستودع", "يلغي الربط", "يرفع الملفات", "ينشئ ملفاً"], "a": 0, "ex": "يعرض روابط المستودع مثل GitHub."}, {"c": "c7", "type": "mcq", "q": "الأمر git remote remove origin:", "opts": ["يلغي ربط المستودع بـ GitHub", "يربط المستودع", "يرفع التغييرات", "يجلب التغييرات"], "a": 0, "ex": "عكس remote add."}, {"c": "c7", "type": "mcq", "q": "الأمر git log:", "opts": ["يعرض سجل التغييرات", "يعرض حالة الملفات", "ينشئ فرعاً", "يمسح الشاشة"], "a": 0, "ex": "log سجل الـ commits."}, {"c": "c7", "type": "mcq", "q": "في مقارنة Git وGitHub، مالك GitHub هو:", "opts": ["تملكه شركة Microsoft", "يملكه مجتمع المطورين", "يملكه جوجل", "يملكه أمازون"], "a": 0, "ex": "هذا من فروق المقارنة."}];
+
+let state = {
+  pool: [],
+  idx: 0,
+  score: 0,
+  answered: false,
+  wrongList: [],
+  perCat: {}, // cat -> {correct, total}
+};
+
+const els = {};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function $(id){ return document.getElementById(id); }
+
+function initTheme(){
+  try{
+    const saved = localStorage.getItem('cc_theme');
+    if(saved) document.documentElement.setAttribute('data-theme', saved);
+  }catch(e){}
+}
+$('themeToggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('cc_theme', next); }catch(e){}
+});
+initTheme();
+
+/* ---- build category picker ---- */
+let selectedMemos = new Set(MEMOS.map(m=>m.id));
+let selectedLen = 30;
+
+function countByMemo(id){ return Q.filter(q=>memoOf(q.c)===id).length; }
+
+function renderCatGrid(){
+  const grid = $('catGrid');
+  grid.innerHTML = '';
+  MEMOS.forEach(memo=>{
+    const div = document.createElement('div');
+    div.className = 'cat-chip' + (selectedMemos.has(memo.id) ? ' on' : '');
+    div.innerHTML = `<div class="box">✓</div><div><div class="label">${memo.label}</div><div class="sub">${esc(memo.sub)}</div><div class="count">${countByMemo(memo.id)} سؤال</div></div>`;
+    div.addEventListener('click', ()=>{
+      if(selectedMemos.has(memo.id)) selectedMemos.delete(memo.id);
+      else selectedMemos.add(memo.id);
+      renderCatGrid();
+      updateStartState();
+    });
+    grid.appendChild(div);
+  });
+}
+renderCatGrid();
+$('totalQCount').textContent = Q.length;
+
+$('selectAllBtn').addEventListener('click', ()=>{
+  if(selectedMemos.size === MEMOS.length){
+    selectedMemos.clear();
+  } else {
+    MEMOS.forEach(m=>selectedMemos.add(m.id));
+  }
+  renderCatGrid();
+  updateStartState();
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    selectedLen = btn.dataset.len === 'all' ? 'all' : parseInt(btn.dataset.len);
+    updateStartState();
+  });
+});
+
+function availableCount(){
+  return Q.filter(q=>selectedMemos.has(memoOf(q.c))).length;
+}
+function updateStartState(){
+  const n = availableCount();
+  $('startBtn').disabled = n === 0;
+  $('startBtn').textContent = n === 0 ? 'اختر ملزمة واحدة على الأقل' : 'ابدأ الاختبار';
+}
+updateStartState();
+
+/* ---- best score (localStorage, per-viewer convenience) ---- */
+function loadBest(){
+  try{
+    const v = localStorage.getItem('cc_best_pct');
+    if(v){
+      $('bestScoreLine').innerHTML = `أفضل نتيجة سابقة: <b>${v}%</b>`;
+    }
+  }catch(e){}
+}
+function saveBest(pct){
+  try{
+    const cur = parseInt(localStorage.getItem('cc_best_pct') || '0');
+    if(pct > cur) localStorage.setItem('cc_best_pct', String(pct));
+  }catch(e){}
+}
+loadBest();
+
+/* ---- shuffle helpers ---- */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ============================================================
+   START QUIZ
+   ============================================================ */
+$('startBtn').addEventListener('click', ()=>{
+  let pool = Q.filter(q=>selectedMemos.has(memoOf(q.c)));
+  pool = shuffle(pool);
+  if(selectedLen !== 'all') pool = pool.slice(0, Math.min(selectedLen, pool.length));
+
+  // build per-question shuffled options, tracking the correct answer text
+  pool = pool.map(q=>{
+    const optObjs = q.opts.map((text,i)=>({text, correct: i===q.a}));
+    const shuffled = shuffle(optObjs);
+    return {...q, _opts: shuffled};
+  });
+
+  state = { pool, idx:0, score:0, answered:false, wrongList:[], perCat:{} };
+  CATEGORIES.forEach(c=>{ state.perCat[c.id] = {correct:0,total:0}; });
+
+  showScreen('screen-quiz');
+  renderQuestion();
+});
+
+function catLabel(id){
+  const c = CATEGORIES.find(x=>x.id===id);
+  return c ? c.label : id;
+}
+
+function renderQuestion(){
+  const total = state.pool.length;
+  const q = state.pool[state.idx];
+  state.answered = false;
+
+  $('progressLabel').textContent = `${state.idx+1} / ${total}`;
+  $('progressFill').style.width = `${(state.idx/total)*100}%`;
+  $('scoreChip').textContent = `${state.score} ✓`;
+
+  $('qCat').textContent = `${memoLabel(memoOf(q.c))} · ${catLabel(q.c)}`;
+  $('qType').textContent = '(اختيار من متعدد)';
+  $('qText').textContent = q.q;
+
+  const optWrap = $('qOptions');
+  optWrap.innerHTML = '';
+  const letters = ['أ','ب','ج','د'];
+  q._opts.forEach((opt, i)=>{
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<span class="letter">${letters[i]}</span><span dir="auto">${esc(opt.text)}</span>`;
+    div.addEventListener('click', ()=> selectAnswer(div, opt, q));
+    optWrap.appendChild(div);
+  });
+
+  $('qExplain').className = 'explain';
+  $('nextBtn').className = 'next-btn';
+  $('nextBtn').textContent = (state.idx === total-1) ? 'عرض النتيجة ←' : 'السؤال التالي ←';
+}
+
+function selectAnswer(div, opt, q){
+  if(state.answered) return;
+  state.answered = true;
+
+  const allOpts = Array.from($('qOptions').children);
+  allOpts.forEach(el=>el.classList.add('disabled'));
+
+  const isCorrect = opt.correct;
+  if(isCorrect){
+    div.classList.add('correct');
+    state.score++;
+  } else {
+    div.classList.add('wrong');
+    // highlight the correct one too
+    const idx = q._opts.indexOf(opt);
+    q._opts.forEach((o,i)=>{
+      if(o.correct) allOpts[i].classList.add('correct');
+    });
+    state.wrongList.push({
+      q: q.q,
+      your: opt.text,
+      correct: q._opts.find(o=>o.correct).text,
+      ex: q.ex,
+      cat: q.c
+    });
+  }
+  allOpts.forEach((el,i)=>{ if(!q._opts[i].correct && el !== div) el.classList.add('dim'); });
+
+  state.perCat[q.c].total++;
+  if(isCorrect) state.perCat[q.c].correct++;
+
+  const exBox = $('qExplain');
+  exBox.className = 'explain show ' + (isCorrect ? 'ok' : 'bad');
+  $('qExplainTag').textContent = isCorrect ? '✓ إجابة صحيحة' : '✕ إجابة غير صحيحة — الصحيح: ' + q._opts.find(o=>o.correct).text;
+  $('qExplainText').textContent = q.ex;
+
+  $('scoreChip').textContent = `${state.score} ✓`;
+  $('nextBtn').classList.add('show');
+}
+
+$('nextBtn').addEventListener('click', ()=>{
+  if(state.idx < state.pool.length - 1){
+    state.idx++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+});
+
+$('quitBtn').addEventListener('click', ()=>{
+  if(confirm('هل تريد إنهاء الاختبار الآن وعرض النتيجة؟')){
+    finishQuiz();
+  }
+});
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function finishQuiz(){
+  const total = state.pool.length;
+  const answeredCount = state.score + state.wrongList.length;
+  const pct = answeredCount > 0 ? Math.round((state.score/answeredCount)*100) : 0;
+
+  $('pctNum').textContent = pct + '%';
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference - (pct/100)*circumference;
+  const ring = $('ringProgress');
+  ring.setAttribute('stroke-dasharray', circumference);
+  ring.style.transition = 'stroke-dashoffset 1s ease';
+  setTimeout(()=>{ ring.setAttribute('stroke-dashoffset', offset); }, 100);
+
+  let msg;
+  if(pct >= 90) msg = `ممتاز يا بطل! <b>${state.score}/${answeredCount}</b> — جاهز تماماً للاختبار 🏆`;
+  else if(pct >= 75) msg = `أداء قوي! <b>${state.score}/${answeredCount}</b> — راجع نقاطك الضعيفة وأنت جاهز 💪`;
+  else if(pct >= 50) msg = `لسه محتاج مذاكرة! <b>${state.score}/${answeredCount}</b> — راجع الملخص وحاول مرة ثانية 📖`;
+  else msg = `تحتاج مراجعة شاملة. <b>${state.score}/${answeredCount}</b> — لا تستسلم، راجع الملخص وأعد المحاولة 🔁`;
+  $('resultMsg').innerHTML = msg;
+
+  saveBest(pct);
+
+  const bd = $('catBreakdown');
+  bd.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const s = state.perCat[cat.id];
+    if(!s || s.total === 0) return;
+    const p = Math.round((s.correct/s.total)*100);
+    const row = document.createElement('div');
+    row.className = 'cb-row';
+    row.innerHTML = `<div class="name">${cat.label}</div><div class="cb-track"><div class="cb-fill" style="width:${p}%"></div></div><div class="cb-frac">${s.correct}/${s.total}</div>`;
+    bd.appendChild(row);
+  });
+
+  const reviewSec = $('reviewSection');
+  reviewSec.innerHTML = '';
+  if(state.wrongList.length > 0){
+    const header = document.createElement('div');
+    header.className = 'cat-title';
+    header.style.marginTop = '4px';
+    header.textContent = `مراجعة الأخطاء (${state.wrongList.length})`;
+    reviewSec.appendChild(header);
+    state.wrongList.forEach(w=>{
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      item.innerHTML = `
+        <div class="rq">${esc(w.q)}</div>
+        <div class="ra">إجابتك: <span class="wrong-ans">${esc(w.your)}</span> — الصحيح: <span class="right-ans">${esc(w.correct)}</span></div>
+        <div class="rex">${esc(w.ex)}</div>
+      `;
+      reviewSec.appendChild(item);
+    });
+  }
+
+  showScreen('screen-results');
+}
+
+$('homeBtn').addEventListener('click', ()=>{ showScreen('screen-home'); loadBest(); });
+$('retryBtn').addEventListener('click', ()=>{ $('startBtn').click(); });
+
+</script>
+</body>
+</html>

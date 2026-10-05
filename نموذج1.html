@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اختبار الحوسبة السحابية — عمل الطالب محمد باخشوين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#081522;
+  --navy-900:#0b2035;
+  --navy-800:#0f2c47;
+  --navy-700:#15395c;
+  --navy-600:#1c4a75;
+  --amber-500:#e08e0b;
+  --amber-400:#f2a92f;
+  --teal-400:#2fb8a6;
+  --red-500:#e2554a;
+  --paper:#eef3f8;
+  --ink:#0b2035;
+  --muted:#5b7288;
+  font-size: 16px;
+}
+:root:not([data-theme="light"]){
+  --bg: var(--navy-950);
+  --panel: #0e2338;
+  --panel-2: #102942;
+  --border: rgba(255,255,255,0.09);
+  --text: #eaf1f8;
+  --text-dim: #93a8bc;
+}
+:root[data-theme="light"]{
+  --bg: var(--paper);
+  --panel: #ffffff;
+  --panel-2: #f4f8fb;
+  --border: rgba(11,32,53,0.1);
+  --text: var(--ink);
+  --text-dim: var(--muted);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: var(--paper);
+    --panel: #ffffff;
+    --panel-2: #f4f8fb;
+    --border: rgba(11,32,53,0.1);
+    --text: var(--ink);
+    --text-dim: var(--muted);
+  }
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background: radial-gradient(1200px 700px at 15% -10%, rgba(224,142,11,0.12), transparent 60%),
+              radial-gradient(1000px 600px at 110% 10%, rgba(47,184,166,0.10), transparent 55%),
+              var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif;
+  direction: rtl;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap{
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 22px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand .mark{
+  width:38px;height:38px;border-radius:10px;
+  background: linear-gradient(145deg, var(--amber-500), var(--amber-400));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;color:#241300;
+  font-size:15px;
+  flex-shrink:0;
+}
+.brand-text .t1{font-size:13px;color:var(--text-dim);line-height:1.2;}
+.brand-text .t2{font-size:16px;font-weight:700;line-height:1.3;}
+.theme-toggle{
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:7px 10px;
+  color:var(--text);
+  cursor:pointer;
+  font-size:14px;
+}
+
+/* ---- cards / panels ---- */
+.card{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+.hero{
+  text-align:center;
+  padding: 34px 22px 30px;
+}
+.hero h1{
+  font-size: 25px;
+  margin: 0 0 8px;
+  line-height:1.4;
+}
+.hero p{
+  color:var(--text-dim);
+  font-size:14.5px;
+  margin: 0 auto 20px;
+  max-width: 480px;
+  line-height:1.7;
+}
+.stats-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin: 18px 0 6px;
+  flex-wrap:wrap;
+}
+.stat-pill{
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:6px 14px;
+  font-size:12.5px;
+  color:var(--text-dim);
+  font-family:'IBM Plex Mono',monospace;
+}
+.stat-pill b{ color:var(--amber-400); font-weight:600; }
+
+/* category picker */
+.cat-title{
+  font-size:13px;
+  color:var(--text-dim);
+  margin: 26px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.cat-title button{
+  background:none;border:none;color:var(--teal-400);
+  font-size:12.5px; cursor:pointer; font-family:inherit;
+}
+.cat-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.cat-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:12px 13px;
+  cursor:pointer;
+  user-select:none;
+  transition: border-color .15s, background .15s;
+}
+.cat-chip.on{
+  border-color: var(--amber-500);
+  background: rgba(224,142,11,0.10);
+}
+.cat-chip .box{
+  width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--text-dim);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+  color:transparent;
+}
+.cat-chip.on .box{
+  background:var(--amber-500);
+  border-color:var(--amber-500);
+  color:#241300;
+}
+.cat-chip .label{font-size:14.5px; font-weight:600; line-height:1.35;}
+.cat-chip .sub{font-size:12.5px; color:var(--text-dim); margin-top:3px; line-height:1.5;}
+.cat-chip .count{font-size:11px;color:var(--text-dim); font-family:'IBM Plex Mono',monospace; margin-top:5px;}
+
+.mode-row{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.mode-btn{
+  flex:1;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  font-size:13px;
+  color:var(--text-dim);
+}
+.mode-btn.on{ border-color: var(--teal-400); color:var(--text); background: rgba(47,184,166,0.10);}
+
+.start-btn{
+  width:100%;
+  margin-top:22px;
+  background: linear-gradient(145deg, var(--amber-500), #c97806);
+  color:#241300;
+  border:none;
+  border-radius:13px;
+  padding:15px;
+  font-size:16px;
+  font-weight:700;
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow: 0 8px 22px rgba(224,142,11,0.25);
+}
+.start-btn:disabled{ opacity:.45; box-shadow:none; cursor:not-allowed; }
+.start-btn:active{ transform: translateY(1px); }
+
+.best-score{
+  text-align:center;
+  margin-top:14px;
+  font-size:12.5px;
+  color: var(--text-dim);
+}
+.best-score b{ color: var(--teal-400); }
+
+/* ---- quiz screen ---- */
+.progress-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+.progress-bar{
+  flex:1;
+  height:8px;
+  background:var(--panel-2);
+  border-radius:6px;
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.progress-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--amber-500), var(--teal-400));
+  border-radius:6px;
+  transition: width .35s ease;
+}
+.progress-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--text-dim);
+  white-space:nowrap;
+}
+.score-chip{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:4px 9px;
+  color: var(--teal-400);
+  white-space:nowrap;
+}
+
+.q-cat{
+  display:inline-block;
+  font-size:11.5px;
+  color:var(--amber-400);
+  background: rgba(224,142,11,0.12);
+  border-radius:20px;
+  padding:4px 11px;
+  margin-bottom:14px;
+}
+.q-type{
+  display:inline-block;
+  font-size:11px;
+  color:var(--text-dim);
+  margin-inline-start:6px;
+}
+.q-text{
+  font-size:18px;
+  line-height:1.65;
+  font-weight:600;
+  margin: 0 0 20px;
+}
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  cursor:pointer;
+  font-size:14.5px;
+  line-height:1.5;
+  text-align:right;
+  transition: border-color .12s, background .12s, transform .08s;
+}
+.opt:active{ transform: scale(0.99); }
+.opt .letter{
+  width:26px;height:26px;border-radius:8px;
+  background: var(--bg);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  flex-shrink:0;
+  color:var(--text-dim);
+}
+.opt.correct{
+  border-color: var(--teal-400);
+  background: rgba(47,184,166,0.14);
+}
+.opt.correct .letter{ background:var(--teal-400); color:#04231d; border-color:var(--teal-400); }
+.opt.wrong{
+  border-color: var(--red-500);
+  background: rgba(226,85,74,0.13);
+}
+.opt.wrong .letter{ background:var(--red-500); color:#2a0805; border-color:var(--red-500); }
+.opt.disabled{ cursor:default; }
+.opt.dim{ opacity:.55; }
+
+.explain{
+  margin-top:16px;
+  padding:14px 15px;
+  border-radius:12px;
+  font-size:13.5px;
+  line-height:1.75;
+  display:none;
+}
+.explain.show{ display:block; animation: fadeIn .25s ease; }
+.explain.ok{ background: rgba(47,184,166,0.10); border:1px solid rgba(47,184,166,0.35); }
+.explain.bad{ background: rgba(226,85,74,0.10); border:1px solid rgba(226,85,74,0.35); }
+.explain .tag{ font-weight:700; display:block; margin-bottom:5px; }
+.explain.ok .tag{ color:var(--teal-400); }
+.explain.bad .tag{ color:var(--red-500); }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+
+.next-btn{
+  width:100%;
+  margin-top:18px;
+  background: var(--panel-2);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  border-radius:12px;
+  padding:13px;
+  font-size:14.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+  display:none;
+}
+.next-btn.show{ display:block; }
+.next-btn:active{ transform: translateY(1px); }
+
+.quiz-foot{
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+}
+.quit-link{
+  color:var(--text-dim);
+  font-size:12.5px;
+  background:none;border:none;cursor:pointer;font-family:inherit;
+  text-decoration:underline;
+}
+
+/* ---- results ---- */
+.result-ring-wrap{
+  display:flex;
+  justify-content:center;
+  margin: 6px 0 18px;
+}
+.result-ring{
+  position:relative;
+  width:160px;height:160px;
+}
+.result-ring svg{ transform: rotate(-90deg); }
+.result-ring .pct{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.result-ring .pct .num{ font-size:32px; font-weight:700; font-family:'IBM Plex Mono',monospace; }
+.result-ring .pct .lbl{ font-size:11.5px; color:var(--text-dim); margin-top:2px; }
+.result-msg{ text-align:center; font-size:15px; margin-bottom: 22px; color:var(--text-dim); }
+.result-msg b{ color:var(--text); }
+
+.cat-breakdown{ margin-top:6px; }
+.cb-row{
+  display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px;
+}
+.cb-row .name{ width:130px; flex-shrink:0; color:var(--text-dim); }
+.cb-track{ flex:1; height:8px; border-radius:5px; background:var(--panel-2); overflow:hidden; border:1px solid var(--border);}
+.cb-fill{ height:100%; border-radius:5px; background: linear-gradient(90deg, var(--teal-400), var(--amber-400)); }
+.cb-frac{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-dim); width:42px; text-align:left; flex-shrink:0;}
+
+.review-item{
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  border-radius:12px;
+  padding:14px 15px;
+  margin-top:12px;
+}
+.review-item .rq{ font-size:14px; font-weight:600; margin-bottom:8px; line-height:1.6; }
+.review-item .ra{ font-size:12.5px; line-height:1.6; }
+.review-item .ra .wrong-ans{ color:var(--red-500); }
+.review-item .ra .right-ans{ color:var(--teal-400); }
+.review-item .rex{ font-size:12.5px; color:var(--text-dim); margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); line-height:1.7;}
+
+.result-actions{ display:flex; gap:10px; margin-top:24px; }
+.result-actions .start-btn{ margin-top:0; }
+.secondary-btn{
+  flex:1;
+  background:var(--panel-2);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  border-radius:13px;
+  padding:15px;
+  font-size:14.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+.screen{ display:none; }
+.screen.active{ display:block; }
+
+::selection{ background: rgba(224,142,11,0.3); }
+
+footer.note{
+  text-align:center;
+  font-size:11.5px;
+  color:var(--text-dim);
+  margin-top:22px;
+  line-height:1.8;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">CC</div>
+      <div class="brand-text">
+        <div class="t1">مذاكرة الاختبار النهائي · عمل الطالب: محمد باخشوين</div>
+        <div class="t2">الحوسبة السحابية — Cloud Computing</div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">◐</button>
+  </div>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <div class="screen active" id="screen-home">
+    <div class="card hero">
+      <h1>جاهز تختبر نفسك؟ 🧠</h1>
+      <p>بنك أسئلة شامل مقسّم حسب محاضراتك السبع بالضبط — اختر محاضرة أو أكثر، أو خض التحدي الكامل. وإذا أخطأت يظهر لك الجواب الصحيح مع السبب.</p>
+      <div class="stats-row">
+        <div class="stat-pill">إجمالي الأسئلة: <b id="totalQCount">0</b></div>
+        <div class="stat-pill">تصحيح فوري مع الشرح</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="cat-title">
+        <span>اختر الملزمة</span>
+        <button id="selectAllBtn">تحديد الكل</button>
+      </div>
+      <div class="cat-grid" id="catGrid" style="grid-template-columns:1fr;"></div>
+
+      <div class="cat-title" style="margin-top:22px;">عدد الأسئلة</div>
+      <div class="mode-row" id="lengthRow">
+        <div class="mode-btn" data-len="15">تحدي سريع (15)</div>
+        <div class="mode-btn on" data-len="30">متوسط (30)</div>
+        <div class="mode-btn" data-len="60">كبير (60)</div>
+        <div class="mode-btn" data-len="100">كبير جداً (100)</div>
+        <div class="mode-btn" data-len="all">شامل (الكل)</div>
+      </div>
+
+      <button class="start-btn" id="startBtn">ابدأ الاختبار</button>
+      <div class="best-score" id="bestScoreLine"></div>
+    </div>
+
+    <footer class="note">مبني على محاضراتك (مقدمة السحابة · Azure · التخزين السحابي · Azure Storage · الاستضافة · Git · GitHub) — ذاكروا سوا وبالتوفيق ✨<br><b style="color:var(--amber-400)">عمل الطالب: محمد باخشوين</b></footer>
+  </div>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-label" id="progressLabel">1 / 30</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="score-chip" id="scoreChip">0 ✓</div>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="q-cat" id="qCat">—</span>
+        <span class="q-type" id="qType"></span>
+      </div>
+      <div class="q-text" id="qText">...</div>
+      <div class="options" id="qOptions"></div>
+      <div class="explain" id="qExplain">
+        <span class="tag" id="qExplainTag"></span>
+        <span id="qExplainText"></span>
+      </div>
+      <button class="next-btn" id="nextBtn">السؤال التالي ←</button>
+    </div>
+
+    <div class="quiz-foot">
+      <button class="quit-link" id="quitBtn">إنهاء والخروج للنتيجة</button>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <div class="screen" id="screen-results">
+    <div class="card">
+      <div class="result-ring-wrap">
+        <div class="result-ring">
+          <svg width="160" height="160">
+            <circle cx="80" cy="80" r="70" stroke="var(--panel-2)" stroke-width="14" fill="none"/>
+            <circle cx="80" cy="80" r="70" stroke="url(#grad)" stroke-width="14" fill="none"
+                    stroke-linecap="round" id="ringProgress" stroke-dasharray="440" stroke-dashoffset="440"/>
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#e08e0b"/>
+                <stop offset="100%" stop-color="#2fb8a6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="pct"><div class="num" id="pctNum">0%</div><div class="lbl">النتيجة</div></div>
+        </div>
+      </div>
+      <div class="result-msg" id="resultMsg"></div>
+
+      <div class="cat-title">الأداء حسب القسم</div>
+      <div class="cat-breakdown" id="catBreakdown"></div>
+    </div>
+
+    <div id="reviewSection" style="margin-top:14px;"></div>
+
+    <div class="result-actions">
+      <button class="secondary-btn" id="homeBtn">الرئيسية</button>
+      <button class="start-btn" id="retryBtn">إعادة المحاولة</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* BANK */
+const CATEGORIES=[{"id": "c1", "label": "المحاضرة 1"}, {"id": "c2", "label": "المحاضرة 4"}, {"id": "c3", "label": "المحاضرة 5"}, {"id": "c4", "label": "المحاضرة 6"}, {"id": "c5", "label": "المحاضرة 8"}, {"id": "c6", "label": "المحاضرة 10"}, {"id": "c7", "label": "المحاضرة 11"}];
+const MEMOS=[{"id": "m1", "label": "المحاضرة 1", "sub": "مقدمة الحوسبة السحابية: التاريخ، المكونات، الخصائص، العيوب، التطبيقات", "cats": ["c1"]}, {"id": "m2", "label": "المحاضرة 4", "sub": "Microsoft Azure: الخدمات، الإيجابيات والسلبيات، إنشاء الجهاز الافتراضي", "cats": ["c2"]}, {"id": "m3", "label": "المحاضرة 5", "sub": "التخزين السحابي: الفوائد والعيوب، النسخ الاحتياطي، Dropbox وDrive وOneDrive وAzure Files", "cats": ["c3"]}, {"id": "m4", "label": "المحاضرة 6", "sub": "Azure Storage: Blob وQueue وTable وإنشاء الأقراص", "cats": ["c4"]}, {"id": "m5", "label": "المحاضرة 8", "sub": "الاستضافة: المشتركة وVPS والمخصصة والسحابية، الدومين وDNS وSEO", "cats": ["c5"]}, {"id": "m6", "label": "المحاضرة 10", "sub": "Git: العناصر، الأوامر، push وpull", "cats": ["c6"]}, {"id": "m7", "label": "المحاضرة 11", "sub": "GitHub: الفرق عن Git، المميزات والعيوب، الأوامر", "cats": ["c7"]}];
+const CAT_TO_MEMO={};
+MEMOS.forEach(m=>m.cats.forEach(c=>CAT_TO_MEMO[c]=m.id));
+function memoOf(catId){return CAT_TO_MEMO[catId];}
+function memoLabel(id){const m=MEMOS.find(x=>x.id===id);return m?m.label:id;}
+const Q=[{"c": "c1", "type": "mcq", "q": "شركة ناشئة لا تملك ميزانية لشراء خوادم وتريد تشغيل تطبيقها، فما الأنسب لها؟", "opts": ["استئجار موارد سحابية والدفع بحسب الاستخدام", "تأجيل إطلاق التطبيق حتى توفر ميزانية", "توظيف فريق كبير لصيانة الأجهزة المحلية", "وسائل التواصل الاجتماعي المعتمدة على السحابة"], "a": 0, "ex": "الدفع حسب الاستخدام يغني عن شراء العتاد."}, {"c": "c1", "type": "mcq", "q": "اختر العبارة الخاطئة عن الحوسبة السحابية:", "opts": ["تتطلب شراء أجهزة وتراخيص قبل البدء دائماً", "تتيح الوصول للخدمات من أي مكان وزمان", "تدفع فيها مقابل ما تستخدمه فعلياً", "تعتمد على خوادم يصل لها المستخدم بالإنترنت"], "a": 0, "ex": "لا تتطلب شراء أجهزة، وهذا من ميزات سهولة التنفيذ."}, {"c": "c1", "type": "mcq", "q": "لماذا تُعد السحابة أوفر من مركز البيانات التقليدي؟", "opts": ["لأن الدفع يكون على الاستخدام لا على الحجز", "لأن الأجهزة تُمنح للعميل مجاناً دائماً", "لأنها لا تحتاج أي اتصال بالإنترنت أبداً", "تُشغَّل وتُخزن وتُحرر على المزودات من أي جهاز متصل"], "a": 0, "ex": "في مركز البيانات تدفع للموارد المحجوزة استخدمتها أم لا."}, {"c": "c1", "type": "mcq", "q": "موظف يريد تعديل ملف من هاتفه ثم من حاسوب آخر. أي خاصية سحابية تخدمه؟", "opts": ["إتاحة الوصول للملفات من أي جهاز متصل", "ارتباط آلاف الخوادم في مكان واحد", "استخراج وتحليل البيانات الضخمة", "حماية الشبكة من الهجمات الخارجية"], "a": 0, "ex": "مركزية التطبيقات والمستندات توفر الإتاحة الدائمة."}, {"c": "c1", "type": "mcq", "q": "مؤسسة تقلقها خصوصية بياناتها على السحابة. أي إجراء مناسب حسب المحاضرة؟", "opts": ["الاعتماد على شركات عالمية مرموقة وطرف ثالث للحماية", "مشاركة كلمات المرور مع كل الموظفين", "تخزين كل البيانات بلا تشفير أو حماية", "تُشغَّل وتُخزن وتُحرر على المزودات من أي جهاز متصل"], "a": 0, "ex": "هكذا توصي المحاضرة لتقليل مخاطر الأمن والخصوصية."}, {"c": "c1", "type": "mcq", "q": "أي مما يلي يُعد من عيوب السحابة؟", "opts": ["اعتماد العميل التام على مزود الخدمة", "توسيع نطاق العمل بمرونة كبيرة", "تحديث البرامج بشكل تلقائي ومستمر", "سعة تخزينية يمكن زيادتها عند الحاجة"], "a": 0, "ex": "التبعية وفقدان السيطرة لأن السحابة بيئة مغلقة."}, {"c": "c1", "type": "mcq", "q": "تعتمد منصة Zoom على السحابة في:", "opts": ["تسهيل التواصل بالصوت والصورة ومشاركة الشاشة", "بيع المنتجات للعملاء عبر الإنترنت", "تحليل بيانات الشركات المنافسة الضخمة", "إزالة الفيروسات من أجهزة المستخدمين"], "a": 0, "ex": "من أمثلة برامج المؤتمرات المعتمدة على السحابة."}, {"c": "c1", "type": "mcq", "q": "عند نقل المعالجة من جهاز المستخدم إلى الخوادم يصبح حاسوب المستخدم:", "opts": ["مجرد واجهة أو نافذة رقمية للخدمة", "هو المسؤول عن كل عمليات المعالجة", "خادماً يستضيف مواقع الآخرين", "غير قادر على الاتصال بالإنترنت"], "a": 0, "ex": "هذا وصف المحاضرة لجهاز المستخدم."}, {"c": "c2", "type": "mcq", "q": "أي عبارة عن Azure غير صحيحة؟", "opts": ["عدد مراكز بياناتها هو الأقل بين المنصات السحابية", "أُطلقت في الأول من فبراير 2010", "بدايتها مجانية وتدفع فقط مقابل ما تختاره", "المرونة وقابلية التوسع ودعم متعدد المنصات"], "a": 0, "ex": "لديها أكبر عدد من مراكز البيانات عالمياً (42 مركزاً)."}, {"c": "c2", "type": "mcq", "q": "مطور يريد استضافة تطبيق ويب في Azure بسهولة. أي خدمة يختار؟", "opts": ["App Service", "IoT Hub", "Cognitive Services", "Virtual Network Gateway"], "a": 0, "ex": "App Service تتيح استضافة تطبيقات الويب والجوال."}, {"c": "c2", "type": "mcq", "q": "فريق يريد إدارة دورة حياة تطوير البرمجيات وتسريع التسليم. يستخدم:", "opts": ["Azure DevOps", "Azure Firewall", "Blob Storage", "Table Storage"], "a": 0, "ex": "DevOps لإدارة دورة حياة التطوير والتعاون."}, {"c": "c2", "type": "mcq", "q": "شركة تريد ربط أجهزة ذكية وجمع بياناتها وإدارتها. تستخدم:", "opts": ["Azure IoT Hub", "Azure SQL Database", "Page Blobs", "Queue Storage"], "a": 0, "ex": "IoT Hub لتوصيل الأجهزة المتصلة وإدارتها."}, {"c": "c2", "type": "mcq", "q": "ما الفرق بين Azure وDynamics 365؟", "opts": ["Azure منصة تطوير وتشغيل، وDynamics لأنظمة CRM وERP", "Dynamics للألعاب، وAzure للتعليم", "Azure لإدارة العملاء، وDynamics للتخزين فقط", "كلاهما يقدم نفس الخدمة تماماً"], "a": 0, "ex": "الأولى منصة سحابية، والثانية لإدارة العملاء وتخطيط الموارد."}, {"c": "c2", "type": "mcq", "q": "أي خدمة تُصنف ضمن الأمان في Azure؟", "opts": ["إدارة الهوية والوصول والتشفير", "تحليل الصوت والنص تلقائياً", "استضافة تطبيقات الجوال والويب", "قواعد البيانات السحابية الصغيرة"], "a": 0, "ex": "ضمن خدمات الأمان: الهوية والوصول والمفاتيح والتشفير."}, {"c": "c2", "type": "mcq", "q": "بعد تعبئة بيانات الجهاز الافتراضي، أي خطوة تسبق ظهور رسالة التحقق؟", "opts": ["الضغط على Review + create", "حذف الجهاز نهائياً من الحساب", "تنزيل ملف RDP للاتصال", "إغلاق المتصفح وفتحه من جديد"], "a": 0, "ex": "تعرض شاشة المراجعة بياناتك ثم نضغط create."}, {"c": "c2", "type": "mcq", "q": "ما فائدة تطبيق Microsoft Authenticator عند إنشاء الحساب؟", "opts": ["إتمام عملية المصادقة بمسح الباركود", "تخزين الملفات على السحابة", "إنشاء الجهاز الافتراضي تلقائياً", "المرونة وقابلية التوسع ودعم متعدد المنصات"], "a": 0, "ex": "للتحقق من الحساب عبر الهاتف."}, {"c": "c3", "type": "mcq", "q": "مستخدم يخشى ضياع فلاشة ملفاته المهمة. ما الحل المناسب؟", "opts": ["التخزين السحابي الشخصي", "حفظ نسخة ثانية على فلاشة مماثلة", "شراء قرص مرن بسعة أكبر قليلاً", "طباعة الملفات وتخزينها بالأدراج"], "a": 0, "ex": "السحابة تحميها من التلف والضياع والسرقة."}, {"c": "c3", "type": "mcq", "q": "اختر العبارة الخاطئة عن التخزين السحابي:", "opts": ["يلزم شراء قرص صلب جديد عند كل زيادة في المساحة", "يمكن زيادة المساحة أو تقليلها عند الحاجة", "يسهل مشاركة الملفات عبر وسائل تواصل عديدة", "يقلل من تكاليف صيانة البيانات والنسخ الاحتياطي"], "a": 0, "ex": "المرونة في المساحة تغني عن شراء أقراص جديدة."}, {"c": "c3", "type": "mcq", "q": "لماذا يُعد التخزين السحابي مناسباً لتخفيض حجم قسم تقنية المعلومات؟", "opts": ["لأن الشركة لا تحتاج لشراء عتاد جديد وصيانته", "لأنه يجعل كل البيانات بلا نسخ احتياطي", "لأنه يمنع الموظفين من استخدام الحواسيب", "خدمة تخزين سحابية متكاملة من Microsoft Azure"], "a": 0, "ex": "لا حاجة لشراء عتاد جديد مثل الأقراص الصلبة."}, {"c": "c3", "type": "mcq", "q": "ما الأنسب لمن يريد حماية بياناته من الكوارث في موقع بعيد؟", "opts": ["النسخ الاحتياطي إلى السحابة", "الاحتفاظ بنسخة على نفس الجهاز", "نسخها على قرص مدمج في الدرج", "إرسالها لزميل عبر الطابعة"], "a": 0, "ex": "النسخ للسحابة يحفظ نسخة خارج الموقع."}, {"c": "c3", "type": "mcq", "q": "جهاز تعطل وفُقدت ملفاته، والملفات منسوخة سحابياً. ما العملية المناسبة؟", "opts": ["Restore لاسترجاع الملفات", "Backup لإنشاء النسخة من جديد", "Format لتهيئة السحابة", "Commit لحفظ التغييرات"], "a": 0, "ex": "Restore تعني استعادة الملفات المنسوخة سابقاً."}, {"c": "c3", "type": "mcq", "q": "أي خدمة سحابية تتبع شركة Apple؟", "opts": ["iCloud", "OneDrive", "Dropbox", "Azure Storage"], "a": 0, "ex": "تتيح مزامنة الملفات بين أجهزة الأيفون."}, {"c": "c3", "type": "mcq", "q": "ما نوع Azure Storage المناسب لمشاركة ملفات بين عدة أجهزة كأنها قرص مشترك؟", "opts": ["File Storage", "Queue Storage", "Table Storage", "Archive Blobs"], "a": 0, "ex": "File Storage يشكل محركات أقراص مشتركة."}, {"c": "c3", "type": "mcq", "q": "أي ترتيب صحيح لتشغيل File share على جهاز افتراضي؟", "opts": ["حساب تخزين ثم file share ثم ربطه بالجهاز", "ربط الجهاز ثم إنشاء حساب التخزين", "file share ثم الجهاز ثم حساب التخزين", "حذف الحساب ثم إنشاؤه من جديد"], "a": 0, "ex": "الترتيب يبدأ بإنشاء storage account."}, {"c": "c4", "type": "mcq", "q": "تطبيق يحتاج حفظ مئات الصور والفيديوهات. أي نوع تخزين يناسبه؟", "opts": ["Blob Storage", "Table Storage", "Queue Storage", "File Storage المشترك"], "a": 0, "ex": "Blob لتخزين الملفات غير المهيكلة."}, {"c": "c4", "type": "mcq", "q": "نظام يسجل أحداث الخادم يومياً بإضافة سطر جديد في نهاية الملف. يستخدم:", "opts": ["Append Blobs", "Block Blobs", "Page Blobs", "Archive Blobs"], "a": 0, "ex": "Append مخصص للإضافة المستمرة لنهاية الملف."}, {"c": "c4", "type": "mcq", "q": "بيانات قديمة نادراً ما تُستخدم وتريد تخزينها بأقل تكلفة. تختار:", "opts": ["Archive Blobs", "Page Blobs", "Append Blobs", "Queue"], "a": 0, "ex": "Archive للتخزين طويل الأمد بتكلفة منخفضة."}, {"c": "c4", "type": "mcq", "q": "متجر إلكتروني يستقبل آلاف الطلبات ويريد معالجتها بالتتابع. يستخدم:", "opts": ["Queue Storage", "Archive Blobs", "File Storage", "Disk Storage"], "a": 0, "ex": "Queue لتخزين الرسائل ومعالجة الوظائف بسلاسة."}, {"c": "c4", "type": "mcq", "q": "اختر العبارة الخاطئة عن Table Storage:", "opts": ["تتطلب بنية بيانات صارمة ومعقدة جداً", "تخزن البيانات على شكل جداول", "تحسّن سرعة الاستعلام عن البيانات", "مناسبة لجمع وفرز البيانات البسيطة"], "a": 0, "ex": "هي مثالية لبيانات لا تتطلب بنية قوية."}, {"c": "c4", "type": "mcq", "q": "قرص بسعة 3 تيرابايت أُضيف لجهاز افتراضي. ما نمط التهيئة؟", "opts": ["GPT", "MBR", "FAT16", "ReFS فقط"], "a": 0, "ex": "GPT للأكبر من 2 تيرابايت."}, {"c": "c4", "type": "mcq", "q": "بعد تهيئة القرص بنجاح نقوم بـ:", "opts": ["إنشاء وحدة تخزين جديدة وتنسيقها", "حذف القرص من الجهاز", "إعادة تثبيت نظام التشغيل", "إنشاء حساب تخزين جديد"], "a": 0, "ex": "نختار New Simple Volume ثم نحدد الحجم والحرف."}, {"c": "c4", "type": "mcq", "q": "أين نجد خيار إضافة قرص جديد لجهاز Azure افتراضي؟", "opts": ["Settings ثم Disks", "Security ثم Keys", "Monitoring ثم Alerts", "Help ثم Support"], "a": 0, "ex": "ثم Create and attach a new disk."}, {"c": "c5", "type": "mcq", "q": "موقع صغير لشركة جديدة وميزانيتها قليلة. أنسب استضافة:", "opts": ["الاستضافة المشتركة", "الاستضافة المخصصة", "سيرفر كامل بمعالج قوي", "مركز بيانات خاص"], "a": 0, "ex": "رخيصة وسهلة وتناسب الشركات الناشئة."}, {"c": "c5", "type": "mcq", "q": "موقع كبير يحتاج تحكماً كاملاً وIP خاصاً. أنسب استضافة:", "opts": ["الاستضافة المخصصة Dedicated", "الاستضافة المشتركة", "الاستضافة المجانية", "استضافة بدون سيرفر"], "a": 0, "ex": "المخصصة تمنحك سيرفراً كاملاً وIP خاصاً."}, {"c": "c5", "type": "mcq", "q": "موقع يجب ألا يتوقف أبداً وتتوزع مواردة على عدة خوادم. أنسب استضافة:", "opts": ["الاستضافة السحابية", "الاستضافة المشتركة", "الاستضافة المجانية", "خادم واحد مخصص ثابت"], "a": 0, "ex": "يُستضاف الموقع على أكثر من سيرفر لضمان الاستمرار."}, {"c": "c5", "type": "mcq", "q": "اختر العبارة الخاطئة عن VPS:", "opts": ["تشارك مواردها مع كل مواقع السيرفر بلا تحديد", "هي مساحة منفصلة ضمن السيرفر الكامل", "توفر توازناً بين السعر والأداء", "تسمح بتثبيت أنظمة تشغيل متعددة"], "a": 0, "ex": "لها موارد مستقلة وغير مشتركة مع المواقع الأخرى."}, {"c": "c5", "type": "mcq", "q": "مدير يريد منع زوار دولة معينة من موقعه. أي استضافة تتيح ذلك؟", "opts": ["المخصصة لأن لها IP خاصاً", "المشتركة لأنها الأرخص", "المجانية لأنها بلا حدود", "لا توجد استضافة تتيح ذلك"], "a": 0, "ex": "IP الخاص يتيح التحكم في الترافيك، وهذا غير متاح في المشتركة."}, {"c": "c5", "type": "mcq", "q": "أي عبارة تصف العلاقة بين الدومين وعنوان IP؟", "opts": ["DNS يربط الاسم النصي بعنوان IP", "الدومين يحل محل DNS تماماً", "IP هو اسم الموقع الذي يكتبه الزائر", "لا علاقة بينهما إطلاقاً"], "a": 0, "ex": "DNS يربط كل دومين بعنوان IP محدد."}, {"c": "c5", "type": "mcq", "q": "موقع لبيع الكتب يريد تحسين ظهوره في البحث. ما المناسب؟", "opts": ["استخدام كلمة books في الدومين", "حذف الميتا تاج من الصفحة", "شراء دومين بأرقام عشوائية", "توازن بين السعر والأداء والأمان"], "a": 0, "ex": "الكلمات المفتاحية في الدومين تساعد SEO."}, {"c": "c5", "type": "mcq", "q": "طالب يريد موقعاً شخصياً بلا تكلفة. ما العيب الذي ينتظره؟", "opts": ["إعلانات وأداء غير مستقر وقيود على المساحة", "تكلفة شهرية مرتفعة جداً", "عدم إمكانية فتح الموقع نهائياً", "دعم فني غير محدود"], "a": 0, "ex": "هذه من عيوب الاستضافة المجانية."}, {"c": "c5", "type": "mcq", "q": "أين نضع الميتا تاج في صفحة HTML؟", "opts": ["داخل head", "في آخر body فقط", "داخل الصور", "خارج الملف تماماً"], "a": 0, "ex": "لا يراها المستخدم لكن تقرؤها محركات البحث."}, {"c": "c5", "type": "mcq", "q": "في تثبيت WordPress على الاستضافة المجانية، ما الخطوة التي تأتي بعد Softaculous؟", "opts": ["الضغط على Install في WordPress", "حذف الدومين", "إنشاء قرص جديد", "تنزيل ملف RDP"], "a": 0, "ex": "ثم نكتب بيانات مسؤول الموقع."}, {"c": "c6", "type": "mcq", "q": "لماذا يُفضّل استخدام Branch عند تجربة ميزة جديدة؟", "opts": ["لتجربتها دون التأثير على الملف الأصلي", "لحذف المستودع الأصلي تلقائياً", "لإخفاء التغييرات عن الفريق", "لأن Git لا يعمل بدونه"], "a": 0, "ex": "الفرع يُطور باستقلالية ثم يدمج."}, {"c": "c6", "type": "mcq", "q": "عدّلت ملفاً ثم أردت العودة لنسخة قديمة. أي ميزة تفيدك؟", "opts": ["حفظ النسخ وتتبعها في Git", "حذف المستودع وإنشاؤه من جديد", "نسخ الملف على الفلاشة", "إعادة تثبيت نظام التشغيل"], "a": 0, "ex": "Git يسمح بالرجوع لأي نسخة محفوظة."}, {"c": "c6", "type": "mcq", "q": "اختر العبارة الخاطئة عن Git:", "opts": ["يعمل فقط عند وجود اتصال دائم بالإنترنت", "نظام لامركزي لإدارة النسخ", "سريع جداً في تتبع التعديلات", "العمل في وقت واحد على نفس الملفات لكل فرد نسخته"], "a": 0, "ex": "الأوامر المحلية في Git لا تحتاج إنترنت."}, {"c": "c6", "type": "mcq", "q": "ما أول أمر نكتبه لبدء تتبع مجلد جديد؟", "opts": ["git init", "git push", "git pull", "git commit"], "a": 0, "ex": "init لتهيئة مستودع جديد."}, {"c": "c6", "type": "mcq", "q": "بعد تعديل ملف، كيف نرتب الأوامر لحفظه؟", "opts": ["git add ثم git commit", "git commit ثم git add", "git push ثم git init", "git pull ثم git clear"], "a": 0, "ex": "نجهز الملف بـ add ثم نحفظه بـ commit."}, {"c": "c6", "type": "mcq", "q": "ما الأمر المناسب لمعرفة هل هناك ملفات متغيرة؟", "opts": ["git status", "git push", "git merge", "git remote"], "a": 0, "ex": "status يبين حالة الملفات."}, {"c": "c6", "type": "mcq", "q": "زميلك رفع تحديثات جديدة على GitHub وتريد جلبها. تستخدم:", "opts": ["git pull", "git push", "git init", "git add"], "a": 0, "ex": "pull تجلب التحديثات وتدمجها."}, {"c": "c6", "type": "mcq", "q": "انتهيت من حفظ commits وتريد مشاركتها مع الفريق. تستخدم:", "opts": ["git push", "git pull", "git status", "git clear"], "a": 0, "ex": "push يرفعها إلى المستودع البعيد."}, {"c": "c6", "type": "mcq", "q": "ما الفرق بين Stage وCommit؟", "opts": ["Stage لتحديد التغييرات وCommit لحفظها", "Stage للحذف وCommit للرفع", "Stage للفروع وCommit للدومين", "Heroku وNetlify لتحديث الموقع بسهولة"], "a": 0, "ex": "Stage هي المرحلة الأولى قبل الحفظ."}, {"c": "c7", "type": "mcq", "q": "اختر العبارة الخاطئة عن GitHub:", "opts": ["هو نفسه نظام Git ويعمل بلا إنترنت", "تدعم طلبات السحب والمراجعات", "منصة لاستضافة الأكواد والتعاون", "التحكم في الإصدارات وتتبع المشكلات"], "a": 0, "ex": "GitHub منصة على الإنترنت بينما Git أداة محلية."}, {"c": "c7", "type": "mcq", "q": "مطور يريد نسخ مشروع من GitHub إلى جهازه. يستخدم:", "opts": ["git clone <url>", "git push origin main", "git merge <branch>", "git remote remove origin"], "a": 0, "ex": "clone ينسخ المستودع من الإنترنت."}, {"c": "c7", "type": "mcq", "q": "لربط مستودعك المحلي بمستودع على GitHub:", "opts": ["git remote add origin <url>", "git branch -M main", "git remote remove origin", "Git على الإنترنت وGitHub محلي"], "a": 0, "ex": "add origin يربطه بالمستودع البعيد."}, {"c": "c7", "type": "mcq", "q": "لإنشاء موقع مجاني من مستودعك على GitHub نستخدم:", "opts": ["GitHub Pages", "Pull Requests", "Copilot", "Wiki"], "a": 0, "ex": "ثم نزور الموقع من Visit site."}, {"c": "c7", "type": "mcq", "q": "لماذا نضغط Authorize عند تسجيل الدخول لـ VS Code؟", "opts": ["للسماح لـ VS Code بالوصول لحسابك", "لحذف حسابك من GitHub", "لإنشاء مستودع فارغ", "لتنزيل ملف RDP"], "a": 0, "ex": "هذه خطوة صلاحيات الوصول."}, {"c": "c7", "type": "mcq", "q": "يتيح GitHub لفرق متعددة العمل على مشروع واحد من خلال:", "opts": ["طلبات السحب والمناقشات داخل المستودع", "إغلاق الإنترنت عن الفريق", "إخفاء الملفات عن المطورين", "مراجعة التغييرات الجديدة في الكود بسهولة"], "a": 0, "ex": "هذه من أدوات التعاون في GitHub."}, {"c": "c7", "type": "mcq", "q": "أي مما يلي من عيوب GitHub؟", "opts": ["بعض المشاريع الخاصة تحتاج حساباً مدفوعاً", "عدم القدرة على تتبع المشكلات", "عدم دعم العمل الجماعي بين الفرق", "مراجعة التغييرات الجديدة في الكود بسهولة"], "a": 0, "ex": "ومنها أيضاً التحديثات المستمرة والمخاطر الأمنية."}, {"c": "c7", "type": "mcq", "q": "الأمر المناسب لحذف النسخ القديمة وفرض رفع الجديدة:", "opts": ["git push origin main --force", "git remote -v", "git pull origin main", "Git محلي بدون إنترنت وGitHub على الإنترنت"], "a": 0, "ex": "force يفرض الرفع على المستودع."}];
+
+let state = {
+  pool: [],
+  idx: 0,
+  score: 0,
+  answered: false,
+  wrongList: [],
+  perCat: {}, // cat -> {correct, total}
+};
+
+const els = {};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function $(id){ return document.getElementById(id); }
+
+function initTheme(){
+  try{
+    const saved = localStorage.getItem('cc_theme');
+    if(saved) document.documentElement.setAttribute('data-theme', saved);
+  }catch(e){}
+}
+$('themeToggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('cc_theme', next); }catch(e){}
+});
+initTheme();
+
+/* ---- build category picker ---- */
+let selectedMemos = new Set(MEMOS.map(m=>m.id));
+let selectedLen = 30;
+
+function countByMemo(id){ return Q.filter(q=>memoOf(q.c)===id).length; }
+
+function renderCatGrid(){
+  const grid = $('catGrid');
+  grid.innerHTML = '';
+  MEMOS.forEach(memo=>{
+    const div = document.createElement('div');
+    div.className = 'cat-chip' + (selectedMemos.has(memo.id) ? ' on' : '');
+    div.innerHTML = `<div class="box">✓</div><div><div class="label">${memo.label}</div><div class="sub">${esc(memo.sub)}</div><div class="count">${countByMemo(memo.id)} سؤال</div></div>`;
+    div.addEventListener('click', ()=>{
+      if(selectedMemos.has(memo.id)) selectedMemos.delete(memo.id);
+      else selectedMemos.add(memo.id);
+      renderCatGrid();
+      updateStartState();
+    });
+    grid.appendChild(div);
+  });
+}
+renderCatGrid();
+$('totalQCount').textContent = Q.length;
+
+$('selectAllBtn').addEventListener('click', ()=>{
+  if(selectedMemos.size === MEMOS.length){
+    selectedMemos.clear();
+  } else {
+    MEMOS.forEach(m=>selectedMemos.add(m.id));
+  }
+  renderCatGrid();
+  updateStartState();
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    selectedLen = btn.dataset.len === 'all' ? 'all' : parseInt(btn.dataset.len);
+    updateStartState();
+  });
+});
+
+function availableCount(){
+  return Q.filter(q=>selectedMemos.has(memoOf(q.c))).length;
+}
+function updateStartState(){
+  const n = availableCount();
+  $('startBtn').disabled = n === 0;
+  $('startBtn').textContent = n === 0 ? 'اختر ملزمة واحدة على الأقل' : 'ابدأ الاختبار';
+}
+updateStartState();
+
+/* ---- best score (localStorage, per-viewer convenience) ---- */
+function loadBest(){
+  try{
+    const v = localStorage.getItem('cc_best_pct');
+    if(v){
+      $('bestScoreLine').innerHTML = `أفضل نتيجة سابقة: <b>${v}%</b>`;
+    }
+  }catch(e){}
+}
+function saveBest(pct){
+  try{
+    const cur = parseInt(localStorage.getItem('cc_best_pct') || '0');
+    if(pct > cur) localStorage.setItem('cc_best_pct', String(pct));
+  }catch(e){}
+}
+loadBest();
+
+/* ---- shuffle helpers ---- */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ============================================================
+   START QUIZ
+   ============================================================ */
+$('startBtn').addEventListener('click', ()=>{
+  let pool = Q.filter(q=>selectedMemos.has(memoOf(q.c)));
+  pool = shuffle(pool);
+  if(selectedLen !== 'all') pool = pool.slice(0, Math.min(selectedLen, pool.length));
+
+  // build per-question shuffled options, tracking the correct answer text
+  pool = pool.map(q=>{
+    const optObjs = q.opts.map((text,i)=>({text, correct: i===q.a}));
+    const shuffled = shuffle(optObjs);
+    return {...q, _opts: shuffled};
+  });
+
+  state = { pool, idx:0, score:0, answered:false, wrongList:[], perCat:{} };
+  CATEGORIES.forEach(c=>{ state.perCat[c.id] = {correct:0,total:0}; });
+
+  showScreen('screen-quiz');
+  renderQuestion();
+});
+
+function catLabel(id){
+  const c = CATEGORIES.find(x=>x.id===id);
+  return c ? c.label : id;
+}
+
+function renderQuestion(){
+  const total = state.pool.length;
+  const q = state.pool[state.idx];
+  state.answered = false;
+
+  $('progressLabel').textContent = `${state.idx+1} / ${total}`;
+  $('progressFill').style.width = `${(state.idx/total)*100}%`;
+  $('scoreChip').textContent = `${state.score} ✓`;
+
+  $('qCat').textContent = `${memoLabel(memoOf(q.c))} · ${catLabel(q.c)}`;
+  $('qType').textContent = '(اختيار من متعدد)';
+  $('qText').textContent = q.q;
+
+  const optWrap = $('qOptions');
+  optWrap.innerHTML = '';
+  const letters = ['أ','ب','ج','د'];
+  q._opts.forEach((opt, i)=>{
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<span class="letter">${letters[i]}</span><span dir="auto">${esc(opt.text)}</span>`;
+    div.addEventListener('click', ()=> selectAnswer(div, opt, q));
+    optWrap.appendChild(div);
+  });
+
+  $('qExplain').className = 'explain';
+  $('nextBtn').className = 'next-btn';
+  $('nextBtn').textContent = (state.idx === total-1) ? 'عرض النتيجة ←' : 'السؤال التالي ←';
+}
+
+function selectAnswer(div, opt, q){
+  if(state.answered) return;
+  state.answered = true;
+
+  const allOpts = Array.from($('qOptions').children);
+  allOpts.forEach(el=>el.classList.add('disabled'));
+
+  const isCorrect = opt.correct;
+  if(isCorrect){
+    div.classList.add('correct');
+    state.score++;
+  } else {
+    div.classList.add('wrong');
+    // highlight the correct one too
+    const idx = q._opts.indexOf(opt);
+    q._opts.forEach((o,i)=>{
+      if(o.correct) allOpts[i].classList.add('correct');
+    });
+    state.wrongList.push({
+      q: q.q,
+      your: opt.text,
+      correct: q._opts.find(o=>o.correct).text,
+      ex: q.ex,
+      cat: q.c
+    });
+  }
+  allOpts.forEach((el,i)=>{ if(!q._opts[i].correct && el !== div) el.classList.add('dim'); });
+
+  state.perCat[q.c].total++;
+  if(isCorrect) state.perCat[q.c].correct++;
+
+  const exBox = $('qExplain');
+  exBox.className = 'explain show ' + (isCorrect ? 'ok' : 'bad');
+  $('qExplainTag').textContent = isCorrect ? '✓ إجابة صحيحة' : '✕ إجابة غير صحيحة — الصحيح: ' + q._opts.find(o=>o.correct).text;
+  $('qExplainText').textContent = q.ex;
+
+  $('scoreChip').textContent = `${state.score} ✓`;
+  $('nextBtn').classList.add('show');
+}
+
+$('nextBtn').addEventListener('click', ()=>{
+  if(state.idx < state.pool.length - 1){
+    state.idx++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+});
+
+$('quitBtn').addEventListener('click', ()=>{
+  if(confirm('هل تريد إنهاء الاختبار الآن وعرض النتيجة؟')){
+    finishQuiz();
+  }
+});
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function finishQuiz(){
+  const total = state.pool.length;
+  const answeredCount = state.score + state.wrongList.length;
+  const pct = answeredCount > 0 ? Math.round((state.score/answeredCount)*100) : 0;
+
+  $('pctNum').textContent = pct + '%';
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference - (pct/100)*circumference;
+  const ring = $('ringProgress');
+  ring.setAttribute('stroke-dasharray', circumference);
+  ring.style.transition = 'stroke-dashoffset 1s ease';
+  setTimeout(()=>{ ring.setAttribute('stroke-dashoffset', offset); }, 100);
+
+  let msg;
+  if(pct >= 90) msg = `ممتاز يا بطل! <b>${state.score}/${answeredCount}</b> — جاهز تماماً للاختبار 🏆`;
+  else if(pct >= 75) msg = `أداء قوي! <b>${state.score}/${answeredCount}</b> — راجع نقاطك الضعيفة وأنت جاهز 💪`;
+  else if(pct >= 50) msg = `لسه محتاج مذاكرة! <b>${state.score}/${answeredCount}</b> — راجع الملخص وحاول مرة ثانية 📖`;
+  else msg = `تحتاج مراجعة شاملة. <b>${state.score}/${answeredCount}</b> — لا تستسلم، راجع الملخص وأعد المحاولة 🔁`;
+  $('resultMsg').innerHTML = msg;
+
+  saveBest(pct);
+
+  const bd = $('catBreakdown');
+  bd.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const s = state.perCat[cat.id];
+    if(!s || s.total === 0) return;
+    const p = Math.round((s.correct/s.total)*100);
+    const row = document.createElement('div');
+    row.className = 'cb-row';
+    row.innerHTML = `<div class="name">${cat.label}</div><div class="cb-track"><div class="cb-fill" style="width:${p}%"></div></div><div class="cb-frac">${s.correct}/${s.total}</div>`;
+    bd.appendChild(row);
+  });
+
+  const reviewSec = $('reviewSection');
+  reviewSec.innerHTML = '';
+  if(state.wrongList.length > 0){
+    const header = document.createElement('div');
+    header.className = 'cat-title';
+    header.style.marginTop = '4px';
+    header.textContent = `مراجعة الأخطاء (${state.wrongList.length})`;
+    reviewSec.appendChild(header);
+    state.wrongList.forEach(w=>{
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      item.innerHTML = `
+        <div class="rq">${esc(w.q)}</div>
+        <div class="ra">إجابتك: <span class="wrong-ans">${esc(w.your)}</span> — الصحيح: <span class="right-ans">${esc(w.correct)}</span></div>
+        <div class="rex">${esc(w.ex)}</div>
+      `;
+      reviewSec.appendChild(item);
+    });
+  }
+
+  showScreen('screen-results');
+}
+
+$('homeBtn').addEventListener('click', ()=>{ showScreen('screen-home'); loadBest(); });
+$('retryBtn').addEventListener('click', ()=>{ $('startBtn').click(); });
+
+</script>
+</body>
+</html>
